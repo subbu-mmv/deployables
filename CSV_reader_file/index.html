@@ -33,11 +33,16 @@
     async function main() {
       // Wait for file selection
       const fileInput = document.getElementById("fileInput");
-      fileInput.addEventListener("change", async (event) => {
-        const file = event.target.files[0];
+      fileInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        log(`✅ File selected: ${file.name}`);
+        const text = await file.text();
+        log(`📄 File size: ${text.length} characters`);
 
         // Provide the file content to the Python environment
         pyodide.globals.set("csv_filename", file.name);
+        log(`✅ ${file.name} set into python globals`);
 
 
         // Redirect stdout in Python
