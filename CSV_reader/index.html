@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pyodide CSV Debug (Fixed Import)</title>
+</head>
+<body>
+  <h3>🧪 Python (Pyodide) CSV Reader Debug</h3>
+  <input type="file" id="file-input" />
+  <pre id="log"></pre>
+  <pre id="output"></pre>
+
+  <script type="module">
+    import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs";
+
+    const logArea = document.getElementById("log");
+    const log = (msg) => {
+      console.log(msg);
+      logArea.textContent += msg + "\n";
+    };
+
+    log("⏳ Loading Pyodide (this can take 30–40 seconds on first load)...");
+    const pyodide = await loadPyodide();
+    await pyodide.loadPackage("pandas");
+    log("✅ Pyodide and Pandas loaded successfully.");
+
+    document.getElementById("file-input").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      log(`✅ File selected: ${file.name}`);
+      const text = await file.text();
+      log(`📄 File size: ${text.length} characters`);
+
+      const pythonCode = `
+import io, sys, pandas as pd
+# Redirect stdout so we can capture prints
+buffer = io.StringIO()
+sys.stdout = buffer
+
+data = """${text.replace(/`/g, "\\`")}"""
+df = pd.read_csv(io.StringIO(data), sep="\t")
+print("DataFrame shape:", df.shape)
+print(df.head().to_string())
+sys.stdout.getvalue()
+`;
+
+      try {
+        log("⚙️ Running Python code...");
+        const result = await pyodide.runPythonAsync(pythonCode);
+        document.getElementById("output").textContent = result;
+        log("✅ Done. Output displayed below.");
+      } catch (err) {
+        log("❌ Error running Python:\n" + err);
+      }
+    });
+  </script>
+</body>
+</html>
