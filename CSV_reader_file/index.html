@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pyodide with External Python File</title>
+</head>
+<body>
+  <h3>Load CSV and Run script.py</h3>
+  <input type="file" id="fileInput" accept=".csv" />
+  <pre id="log"></pre>
+  <pre id="output"></pre>
+
+  <script type="module">
+    import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs";
+
+    const logArea = document.getElementById("log");
+    const output = document.getElementById("output");
+    const log = (msg) => {
+      console.log(msg);
+      logArea.textContent += msg + "\n";
+    };
+
+    log("⏳ Loading Pyodide (this can take 30–40 seconds on first load)...");
+    const pyodide = await loadPyodide();
+    await pyodide.loadPackage("pandas");
+    log("✅ Pyodide and Pandas loaded successfully.");
+
+    // Fetch your Python script from the same directory
+    const pyfile = await fetch("script.py");
+    const pythonCode = await pyfile.text();
+    log("✅ script.py fetched successfully.");
+
+    async function main() {
+      // Wait for file selection
+      const fileInput = document.getElementById("fileInput");
+      fileInput.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+
+        // Provide the file content to the Python environment
+        pyodide.globals.set("csv_filename", file.name);
+
+
+        // Redirect stdout in Python
+        const wrappedCode = `
+import io, sys
+sys.stdout = io.StringIO()
+${pythonCode}
+sys.stdout.getvalue()
+`;
+
+        // Run the script
+        const result = await pyodide.runPythonAsync(wrappedCode);
+        output.textContent = result;
+      });
+    }
+
+    main();
+  </script>
+
+  <!-- <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script> -->
+</body>
+</html>
