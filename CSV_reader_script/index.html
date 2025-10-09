@@ -13,8 +13,15 @@
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
     <script type="module">
 
-      console.log("Loading Pyodide...");
       import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs";
+      const output = document.getElementById("output");
+      const logArea = document.getElementById("log");
+      const log = (msg) => {
+        console.log(msg);
+        logArea.textContent += msg + "\n";
+      };
+
+      console.log("Loading Pyodide...");
       const pyodide = await loadPyodide();
       await pyodide.loadPackage("pandas");
       console.log("Pyodide and pandas loaded.");
@@ -22,13 +29,6 @@
       // Fetch external script.py
       const response = await fetch("script.py");
       const pythonCode = await response.text();
-
-      const output = document.getElementById("output");
-      const logArea = document.getElementById("log");
-      const log = (msg) => {
-        console.log(msg);
-        logArea.textContent += msg + "\n";
-      };
 
       async function main() {
         document.getElementById("fileInput").addEventListener("change", async (event) => {
