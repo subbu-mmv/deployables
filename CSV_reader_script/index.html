@@ -44,12 +44,10 @@
         pyodide.globals.set("csv_filename", file.name);
         log(`✅ ${file.name} set into python globals`);
 
-
         // Redirect stdout in Python
         const wrappedCode = `
-import io, sys
-sys.stdout = io.StringIO()
 ${pythonCode}
+result = process_csv(text)
 sys.stdout.getvalue()
 `;
 
