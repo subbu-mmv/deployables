@@ -16,6 +16,16 @@
 
       const logArea = document.getElementById("log");
       const output = document.getElementById("output");
+      const log = (msg) => {
+        console.log(msg);
+        logArea.textContent += msg + "\n";
+      };
+      log("⏳ Loading Pyodide (this can take 30–40 seconds on first load)...");
+      const pyodide = await loadPyodide();
+      await pyodide.loadPackage("pandas");
+      log("✅ Pyodide and Pandas loaded successfully.");
+
+      
     </script>
   </body>
 
