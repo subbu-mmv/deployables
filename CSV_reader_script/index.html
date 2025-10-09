@@ -7,24 +7,30 @@
   <body>
     <h3>Select a CSV file</h3>
     <input type="file" id="fileInput" accept=".csv" />
+    <pre id="log"></pre>
     <pre id="output"></pre>
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
     <script type="module">
+
+      console.log("Loading Pyodide...");
+      import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs";
+      const pyodide = await loadPyodide();
+      await pyodide.loadPackage("pandas");
+      console.log("Pyodide and pandas loaded.");
+
+      // Fetch external script.py
+      const response = await fetch("script.py");
+      const pythonCode = await response.text();
+
       const output = document.getElementById("output");
+      const logArea = document.getElementById("log");
+      const log = (msg) => {
+        console.log(msg);
+        logArea.textContent += msg + "\n";
+      };
 
       async function main() {
-        console.log("Loading Pyodide...");
-        const pyodide = await loadPyodide({
-          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/"
-        });
-        await pyodide.loadPackage("pandas");
-        console.log("Pyodide and pandas loaded.");
-
-        // Fetch external script.py
-        const response = await fetch("script.py");
-        const pythonCode = await response.text();
-
         document.getElementById("fileInput").addEventListener("change", async (event) => {
           const file = event.target.files[0];
           const text = await file.text();
