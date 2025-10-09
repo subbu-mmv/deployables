@@ -5,7 +5,7 @@
   <title>Pyodide with External Python File</title>
 </head>
 <body>
-  <h3>Load CSV and Run script.py</h3>
+  <h3>Load CSV and Run script.py. Hehe</h3>
   <input type="file" id="fileInput" accept=".csv" />
   <pre id="log"></pre>
   <pre id="output"></pre>
@@ -39,6 +39,7 @@
         log(`✅ File selected: ${file.name}`);
         const text = await file.text();
         log(`📄 File size: ${text.length} characters`);
+        log(`File content : ${text.substring(0, 100)}...`); // Log first 100 characters
 
         // Provide the file content to the Python environment
         pyodide.globals.set("csv_filename", file.name);
