@@ -47,7 +47,9 @@
         // Redirect stdout in Python
         const wrappedCode = `
 ${pythonCode}
-result = process_csv(text)
+df_result = process_csv(text)
+print(df_result.shape())
+print(df_result.to_string())
 sys.stdout.getvalue()
 `;
 
