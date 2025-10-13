@@ -51,7 +51,7 @@
         ul.classList.add('list-group');
 
         // Filter files matching "proc$[s]" or "acqu$[s]"
-        const pattern = /(proc*|acqu*)/i;
+        const pattern = /^(proc.*s|acqu.*s)$/i;
         const filteredFiles = Array.from(fileList).filter(file =>
           pattern.test(file.name)
         );
