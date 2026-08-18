@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Recipes</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main>
+
+        <h1>🍳 My Recipes</h1>
+
+        <section class="filters">
+
+            <h2>Filters</h2>
+
+            <div class="filter-buttons">
+
+                <label>
+                    <input type="checkbox" id="vegetarian">
+                    Vegetarian
+                </label>
+
+                <label>
+                    <input type="checkbox" id="nonveg">
+                    Non-vegetarian
+                </label>
+
+            </div>
+
+            <h3>Ingredients I have</h3>
+
+            <div id="ingredients" class="ingredients">
+                <!-- JavaScript will create the ingredient buttons here -->
+            </div>
+
+            <button id="clearIngredients">
+                Clear ingredients
+            </button>
+
+        </section>
+
+
+        <p id="resultCount"></p>
+
+        <section id="recipes">
+
+            <!-- Recipe 1 -->
+
+            <details
+                class="recipe"
+                data-type="nonveg"
+                data-ingredients="chicken,tomato,butter,cream">
+
+                <summary>Butter Chicken</summary>
+
+                <div class="recipe-content">
+
+                    <h3>Ingredients</h3>
+
+                    <ul>
+                        <li>500g chicken</li>
+                        <li>2 tbsp butter</li>
+                        <li>1 cup tomato</li>
+                        <li>½ cup cream</li>
+                    </ul>
+
+                    <h3>Procedure</h3>
+
+                    <ol>
+                        <li>Marinate the chicken.</li>
+                        <li>Cook the chicken until browned.</li>
+                        <li>Add tomato and spices.</li>
+                        <li>Add cream.</li>
+                        <li>Simmer for 10 minutes.</li>
+                    </ol>
+
+                </div>
+
+            </details>
+
+
+            <!-- Recipe 2 -->
+
+            <details
+                class="recipe"
+                data-type="vegetarian"
+                data-ingredients="rice,urad-dal,potato,onion">
+
+                <summary>Masala Dosa</summary>
+
+                <div class="recipe-content">
+
+                    <h3>Ingredients</h3>
+
+                    <ul>
+                        <li>Rice</li>
+                        <li>Urad dal</li>
+                        <li>Potato</li>
+                        <li>Onion</li>
+                    </ul>
+
+                    <h3>Procedure</h3>
+
+                    <ol>
+                        <li>Prepare the dosa batter.</li>
+                        <li>Ferment overnight.</li>
+                        <li>Prepare the potato filling.</li>
+                        <li>Cook the dosa.</li>
+                    </ol>
+
+                </div>
+
+            </details>
+
+
+            <!-- Recipe 3 -->
+
+            <details
+                class="recipe"
+                data-type="vegetarian"
+                data-ingredients="rice,tomato,onion,garlic">
+
+                <summary>Tomato Rice</summary>
+
+                <div class="recipe-content">
+
+                    <h3>Ingredients</h3>
+
+                    <ul>
+                        <li>Rice</li>
+                        <li>Tomato</li>
+                        <li>Onion</li>
+                        <li>Garlic</li>
+                    </ul>
+
+                    <h3>Procedure</h3>
+
+                    <ol>
+                        <li>Cook the rice.</li>
+                        <li>Fry onion and garlic.</li>
+                        <li>Add tomatoes and spices.</li>
+                        <li>Mix with rice.</li>
+                    </ol>
+
+                </div>
+
+            </details>
+
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
+
