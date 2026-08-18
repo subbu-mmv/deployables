@@ -106,11 +106,9 @@ function filterRecipes() {
 
         // Ingredient filter
 
-        const ingredientsMatch =
-            selectedIngredients.every(
-                ingredient =>
-                    ingredients.includes(ingredient)
-            );
+        const ingredientsMatch = ingredients.every(
+            ingredient => selectedIngredients.includes(ingredient)
+        );
 
 
         // Final result
