@@ -63,3 +63,94 @@ button {
     background: white;
     cursor: pointer;
 }
+
+
+
+/* New additions */
+.ingredient-picker {
+    position: relative;
+    max-width: 500px;
+}
+
+.ingredient-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 14px;
+
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: left;
+}
+
+.ingredient-dropdown {
+    display: none;
+
+    position: absolute;
+    z-index: 100;
+
+    width: 100%;
+    margin-top: 5px;
+
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+    overflow: hidden;
+}
+
+.ingredient-dropdown.open {
+    display: block;
+}
+
+#ingredientSearch {
+    width: calc(100% - 20px);
+
+    margin: 10px;
+
+    padding: 9px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    box-sizing: border-box;
+}
+
+#ingredients {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.ingredient-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 8px 12px;
+
+    cursor: pointer;
+}
+
+.ingredient-option:hover {
+    background: #f5f5f5;
+}
+
+.ingredient-option input {
+    cursor: pointer;
+}
+
+.selected-ingredients {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    color: #555;
+    font-size: 0.95rem;
+}

@@ -34,14 +34,43 @@
             </div>
 
             <h3>Ingredients I have</h3>
+            <div class="ingredient-picker">
 
-            <div id="ingredients" class="ingredients">
-                <!-- JavaScript will create the ingredient buttons here -->
+                <button
+                    id="ingredientToggle"
+                    class="ingredient-toggle"
+                    type="button">
+
+                    <span>Select ingredients...</span>
+                    <span>▼</span>
+
+                </button>
+
+                <div
+                    id="ingredientDropdown"
+                    class="ingredient-dropdown">
+
+                    <input
+                        type="search"
+                        id="ingredientSearch"
+                        placeholder="Search ingredients..."
+                        autocomplete="off">
+
+                    <div id="ingredients">
+                        <!-- JavaScript creates the list here -->
+                    </div>
+                </div>
+            </div>
+
+            <div
+                id="selectedIngredients"
+                class="selected-ingredients">
             </div>
 
             <button id="clearIngredients">
                 Clear ingredients
             </button>
+
 
         </section>
 

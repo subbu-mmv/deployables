@@ -1,14 +1,38 @@
 const recipes = document.querySelectorAll(".recipe");
 
-const vegetarianFilter = document.getElementById("vegetarian");
-const nonvegFilter = document.getElementById("nonveg");
+const vegetarianFilter =
+    document.getElementById("vegetarian");
 
-const ingredientsContainer = document.getElementById("ingredients");
-const clearButton = document.getElementById("clearIngredients");
-const resultCount = document.getElementById("resultCount");
+const nonvegFilter =
+    document.getElementById("nonveg");
+
+const ingredientsContainer =
+    document.getElementById("ingredients");
+
+const ingredientToggle =
+    document.getElementById("ingredientToggle");
+
+const ingredientDropdown =
+    document.getElementById("ingredientDropdown");
+
+const ingredientSearch =
+    document.getElementById("ingredientSearch");
+
+const selectedIngredientsDisplay =
+    document.getElementById("selectedIngredients");
+
+const clearButton =
+    document.getElementById("clearIngredients");
+
+const resultCount =
+    document.getElementById("resultCount");
 
 
-// Find all ingredients used by all recipes
+/*
+ * --------------------------------------------------
+ * Collect all ingredients
+ * --------------------------------------------------
+ */
 
 const allIngredients = new Set();
 
@@ -26,41 +50,159 @@ recipes.forEach(recipe => {
 });
 
 
-// Create ingredient checkboxes
+/*
+ * --------------------------------------------------
+ * Create alphabetically sorted ingredient list
+ * --------------------------------------------------
+ */
 
 [...allIngredients]
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .forEach(ingredient => {
 
-        const label = document.createElement("label");
+        const label =
+            document.createElement("label");
 
-        label.className = "ingredient";
+        label.className = "ingredient-option";
+
+        label.dataset.ingredient = ingredient;
 
         label.innerHTML = `
             <input
                 type="checkbox"
                 value="${ingredient}">
-            ${ingredient}
+
+            <span>${ingredient}</span>
         `;
 
         ingredientsContainer.appendChild(label);
+
     });
 
 
-// Get selected ingredients
+/*
+ * --------------------------------------------------
+ * Open / close dropdown
+ * --------------------------------------------------
+ */
+
+ingredientToggle.addEventListener(
+    "click",
+    () => {
+
+        ingredientDropdown.classList.toggle("open");
+
+        if (ingredientDropdown.classList.contains("open")) {
+            ingredientSearch.focus();
+        }
+
+    }
+);
+
+
+/*
+ * Close dropdown when clicking outside
+ * --------------------------------------------------
+ */
+
+document.addEventListener(
+    "click",
+    event => {
+
+        const picker =
+            document.querySelector(".ingredient-picker");
+
+        if (!picker.contains(event.target)) {
+            ingredientDropdown.classList.remove("open");
+        }
+
+    }
+);
+
+
+/*
+ * --------------------------------------------------
+ * Get selected ingredients
+ * --------------------------------------------------
+ */
 
 function getSelectedIngredients() {
 
     return [
-        ...ingredientsContainer.querySelectorAll(
-            "input:checked"
-        )
+        ...ingredientsContainer
+            .querySelectorAll("input:checked")
     ].map(input => input.value);
 
 }
 
 
-// Apply filters
+/*
+ * --------------------------------------------------
+ * Display selected ingredients
+ * --------------------------------------------------
+ */
+
+function updateSelectedIngredients() {
+
+    const selected =
+        getSelectedIngredients();
+
+    selectedIngredientsDisplay.innerHTML = "";
+
+    if (selected.length === 0) {
+
+        selectedIngredientsDisplay.textContent =
+            "No ingredients selected.";
+
+        return;
+    }
+
+
+    selectedIngredientsDisplay.textContent =
+        selected.join(", ");
+
+}
+
+
+/*
+ * --------------------------------------------------
+ * Filter ingredient dropdown by search
+ * --------------------------------------------------
+ */
+
+ingredientSearch.addEventListener(
+    "input",
+    () => {
+
+        const search =
+            ingredientSearch.value
+                .toLowerCase()
+                .trim();
+
+        document
+            .querySelectorAll(".ingredient-option")
+            .forEach(option => {
+
+                const ingredient =
+                    option.dataset.ingredient
+                        .toLowerCase();
+
+                option.style.display =
+                    ingredient.includes(search)
+                        ? ""
+                        : "none";
+
+            });
+
+    }
+);
+
+
+/*
+ * --------------------------------------------------
+ * Filter recipes
+ * --------------------------------------------------
+ */
 
 function filterRecipes() {
 
@@ -69,9 +211,11 @@ function filterRecipes() {
 
     let visibleCount = 0;
 
+
     recipes.forEach(recipe => {
 
-        const type = recipe.dataset.type;
+        const type =
+            recipe.dataset.type;
 
         const ingredients =
             recipe.dataset.ingredients
@@ -79,12 +223,16 @@ function filterRecipes() {
                 .map(x => x.trim());
 
 
-        // Category filter
+        /*
+         * Category filter
+         */
 
         let categoryMatches = true;
 
-        if (vegetarianFilter.checked ||
-            nonvegFilter.checked) {
+        if (
+            vegetarianFilter.checked ||
+            nonvegFilter.checked
+        ) {
 
             categoryMatches = false;
 
@@ -101,17 +249,33 @@ function filterRecipes() {
             ) {
                 categoryMatches = true;
             }
+
         }
 
 
-        // Ingredient filter
+        /*
+         * Ingredient filter
+         *
+         * Selected ingredients mean:
+         *
+         * "These are ingredients I HAVE."
+         *
+         * Therefore a recipe matches if ALL of
+         * its ingredients are among the things
+         * I have.
+         */
 
-        const ingredientsMatch = ingredients.every(
-            ingredient => selectedIngredients.includes(ingredient)
-        );
+        const ingredientsMatch =
+            selectedIngredients.length === 0 ||
+            ingredients.every(
+                ingredient =>
+                    selectedIngredients.includes(ingredient)
+            );
 
 
-        // Final result
+        /*
+         * Final visibility
+         */
 
         const visible =
             categoryMatches &&
@@ -129,11 +293,35 @@ function filterRecipes() {
 
 
     resultCount.textContent =
-        `${visibleCount} recipe${visibleCount === 1 ? "" : "s"} found`;
+        `${visibleCount} recipe${
+            visibleCount === 1 ? "" : "s"
+        } found`;
+
 }
 
 
-// Listen for changes
+/*
+ * --------------------------------------------------
+ * Ingredient checkbox changes
+ * --------------------------------------------------
+ */
+
+ingredientsContainer.addEventListener(
+    "change",
+    () => {
+
+        updateSelectedIngredients();
+        filterRecipes();
+
+    }
+);
+
+
+/*
+ * --------------------------------------------------
+ * Category changes
+ * --------------------------------------------------
+ */
 
 vegetarianFilter.addEventListener(
     "change",
@@ -145,13 +333,12 @@ nonvegFilter.addEventListener(
     filterRecipes
 );
 
-ingredientsContainer.addEventListener(
-    "change",
-    filterRecipes
-);
 
-
-// Clear ingredient selection
+/*
+ * --------------------------------------------------
+ * Clear ingredients
+ * --------------------------------------------------
+ */
 
 clearButton.addEventListener(
     "click",
@@ -163,12 +350,18 @@ clearButton.addEventListener(
                 input.checked = false;
             });
 
+        updateSelectedIngredients();
         filterRecipes();
+
     }
 );
 
 
-// Initial state
+/*
+ * --------------------------------------------------
+ * Initial state
+ * --------------------------------------------------
+ */
 
+updateSelectedIngredients();
 filterRecipes();
-
