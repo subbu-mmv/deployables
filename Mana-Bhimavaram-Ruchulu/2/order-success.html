@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed | Mana Bhimavaram Ruchulu</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .confirmation-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .check-icon {
+      width: 64px;
+      height: 64px;
+      background: #dcfce7;
+      color: #16a34a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 16px auto;
+    }
+    h1 { margin: 0 0 8px 0; font-size: 1.4rem; }
+    p { color: #64748b; font-size: 0.95rem; margin-bottom: 20px; }
+    
+    .details-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 20px;
+      border: 1px solid #e2e8f0;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .detail-row:last-child { margin-bottom: 0; }
+    .label { color: #64748b; }
+    .value { font-weight: 700; color: #1e293b; }
+    
+    .whatsapp-notice {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      color: #166534;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      background: #25d366;
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .home-link {
+      display: inline-block;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="confirmation-card">
+    <div class="check-icon">✓</div>
+    <h1>Order Confirmed!</h1>
+    <p>Thank you for ordering with Mana Bhimavaram Ruchulu.</p>
+
+    <div class="details-box">
+      <div class="detail-row">
+        <span class="label">Order ID:</span>
+        <span class="value" id="orderId">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Total Amount:</span>
+        <span class="value" id="orderAmount">₹0</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Payment Status:</span>
+        <span class="value" id="paymentStatus">PENDING</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Transaction ID:</span>
+        <span class="value" id="txnId">N/A</span>
+      </div>
+    </div>
+
+    <div class="whatsapp-notice">
+      💬 Need any modifications to your order or delivery timing? Text us directly on WhatsApp!
+    </div>
+
+    <a id="waLink" href="#" target="_blank" class="wa-btn">
+      Chat with us on WhatsApp
+    </a>
+
+    <a href="index.html" class="home-link">← Back to Menu</a>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Parse parameters passed in URL
+      const params = new URLSearchParams(window.location.search);
+      
+      const orderId = params.get("order_id") || "MBR-CONFIRMED";
+      const amount = params.get("amount") || "0";
+      const status = params.get("status") || "SUCCESS";
+      const txn = params.get("txn_id") || "N/A";
+
+      // Populate DOM elements
+      document.getElementById("orderId").innerText = orderId;
+      document.getElementById("orderAmount").innerText = `₹${amount}`;
+      document.getElementById("paymentStatus").innerText = status;
+      document.getElementById("txnId").innerText = txn;
+
+      // Build WhatsApp pre-filled message URL
+      const waNumber = "YOUR_PHONE_NUMBER_HERE"; // Replace with your WhatsApp business number
+      const text = encodeURIComponent(`Hi, I have a question regarding my Order #${orderId}`);
+      document.getElementById("waLink").href = `https://wa.me/${waNumber}?text=${text}`;
+    });
+  </script>
+
+</body>
+</html>
