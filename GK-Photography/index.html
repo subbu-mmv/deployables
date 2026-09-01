@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Photography Estimate Calculator</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Golden Knot Photography - Event Estimate</title>
+
 
     <style>
+
         * {
             box-sizing: border-box;
         }
 
+
         body {
             margin: 0;
-            padding: 20px 12px 40px;
+            padding: 18px 8px 30px;
 
             font-family:
                 -apple-system,
@@ -27,540 +36,744 @@
             color: #111827;
         }
 
-        .container {
-            width: 100%;
-            max-width: 620px;
-            margin: 0 auto;
-        }
 
-        /* --------------------------------
-           SITE HEADER
-        -------------------------------- */
-
+        .container,
         .site-header {
             width: 100%;
             max-width: 620px;
-            margin: 0 auto 18px;
-            text-align: center;
+
+            margin-left: auto;
+            margin-right: auto;
         }
+
+
+        /* =================================
+           HEADER
+        ================================= */
+
+        .site-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
 
         .business-name {
-            font-size: 23px;
+            font-size: 22px;
             font-weight: 700;
-            letter-spacing: 0.2px;
         }
+
 
         .page-subtitle {
-            margin-top: 3px;
+            margin-top: 2px;
+
             font-size: 13px;
             color: #6b7280;
-            font-weight: 450;
         }
 
-        /* --------------------------------
+
+        /* =================================
            GENERAL CARD
-        -------------------------------- */
+        ================================= */
 
         .card {
-            border-radius: 22px;
-            padding: 20px;
-            margin-bottom: 14px;
+            border-radius: 18px;
+            padding: 15px;
+
+            margin-bottom: 11px;
         }
 
-        /* --------------------------------
-           SETTINGS / TOP CARD
-        -------------------------------- */
+
+        /* =================================
+           RATE / DAYS CARD
+        ================================= */
 
         .settings-card {
             background: #edf8f2;
+
             border: 1.5px solid #8bc9a8;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+
+            box-shadow:
+                0 2px 7px rgba(0, 0, 0, 0.04);
         }
 
-        .days-title {
-            text-align: center;
-            font-size: 21px;
+
+        .days-row {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 12px;
+        }
+
+
+        .days-label {
+            font-size: 17px;
             font-weight: 650;
-            margin-bottom: 10px;
         }
 
-        /* --------------------------------
-           STEPPER
-        -------------------------------- */
 
-        .stepper {
-            height: 54px;
+        /* =================================
+           DAYS STEPPER
+        ================================= */
+
+        .days-stepper {
+            height: 42px;
+
             display: grid;
-            grid-template-columns: 55px 1fr 55px;
+            grid-template-columns: 40px 42px 40px;
+
             align-items: center;
 
             background: white;
+
             border: 1.5px solid #b8c9c0;
-            border-radius: 15px;
+            border-radius: 12px;
 
             overflow: hidden;
         }
 
-        .stepper button {
+
+        .days-stepper button {
             height: 100%;
+
             border: none;
             background: transparent;
 
-            font-size: 27px;
+            font-size: 22px;
             font-weight: 600;
 
             cursor: pointer;
+
             touch-action: manipulation;
         }
 
-        .stepper button.minus {
+
+        .days-stepper .minus {
             color: #dc2626;
         }
 
-        .stepper button.plus {
+
+        .days-stepper .plus {
             color: #15803d;
         }
 
-        .stepper button:active {
+
+        .days-stepper button:active {
             background: #f1f5f9;
         }
 
-        .stepper-value {
+
+        .days-value {
             text-align: center;
-            font-size: 25px;
-            font-weight: 600;
+
+            font-size: 19px;
+            font-weight: 650;
         }
 
-        /* --------------------------------
-           RATE INPUTS
-        -------------------------------- */
+
+        /* =================================
+           RATE GRID
+        ================================= */
 
         .rate-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
 
-            margin-top: 20px;
+            grid-template-columns: 1fr 1fr;
+
+            gap: 9px;
+
+            margin-top: 13px;
         }
 
-        .field-label {
+
+        .rate-label {
             display: block;
 
-            font-size: 15px;
-            font-style: italic;
-            font-weight: 500;
+            margin-bottom: 4px;
+            padding-left: 2px;
 
-            margin: 0 0 7px 3px;
+            font-size: 12px;
+            font-style: italic;
+
+            color: #374151;
         }
+
 
         .money-input {
             position: relative;
         }
 
+
         .money-input span {
             position: absolute;
-            left: 14px;
+
+            left: 10px;
             top: 50%;
+
             transform: translateY(-50%);
 
-            font-size: 20px;
+            font-size: 16px;
+
             color: #374151;
 
             pointer-events: none;
         }
 
-        input {
-            font-family: inherit;
-        }
 
         .money-input input {
             width: 100%;
-            height: 52px;
+            height: 40px;
 
-            padding: 0 12px 0 38px;
+            padding: 0 8px 0 29px;
 
             border: 1.5px solid #b8c9c0;
-            border-radius: 14px;
+            border-radius: 10px;
 
             background: white;
 
-            font-size: 20px;
+            font-family: inherit;
+
+            font-size: 16px;
+
             color: #166534;
 
             outline: none;
         }
 
+
         .money-input input:focus {
             border-color: #22a05a;
-            box-shadow: 0 0 0 3px rgba(34, 160, 90, 0.12);
+
+            box-shadow:
+                0 0 0 3px rgba(34, 160, 90, 0.10);
         }
 
-        /* --------------------------------
-           DAY CARDS
-        -------------------------------- */
 
-        .day-card {
+        /* =================================
+           DAY TABLE
+        ================================= */
+
+        .table-card {
             background: #f1f6ff;
+
             border: 1.5px solid #bdd4ff;
 
-            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.035);
-        }
-
-        .day-heading {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            margin-bottom: 14px;
-        }
-
-        .day-number {
-            width: 32px;
-            height: 32px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: #2878e8;
-            color: white;
-
-            font-size: 17px;
-            font-weight: 600;
-        }
-
-        .day-title {
-            font-size: 20px;
-            font-weight: 650;
-        }
-
-        .crew-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .crew-label {
-            display: block;
-
-            font-size: 15px;
-            font-style: italic;
-            font-weight: 500;
-
-            margin: 0 0 7px 3px;
-        }
-
-        .crew-stepper {
-            height: 48px;
-
-            display: grid;
-            grid-template-columns: 45px 1fr 45px;
-            align-items: center;
-
-            background: white;
-            border: 1.5px solid #cdd5df;
-            border-radius: 13px;
+            padding: 10px 6px;
 
             overflow: hidden;
         }
 
+
+        .day-table {
+            width: 100%;
+
+            border-collapse: separate;
+            border-spacing: 0 3px;
+
+            table-layout: fixed;
+        }
+
+
+        .day-table th {
+            padding: 3px 1px 5px;
+
+            font-size: 11px;
+            font-weight: 650;
+
+            color: #374151;
+
+            text-align: center;
+        }
+
+
+        .day-table th:first-child {
+            text-align: left;
+
+            width: 54px;
+        }
+
+
+        .day-table td {
+            padding: 3px 1px;
+
+            text-align: center;
+        }
+
+
+        .day-table td:first-child {
+            text-align: left;
+
+            padding-left: 3px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            color: #1f2937;
+        }
+
+
+        /* =================================
+           CREW STEPPER
+        ================================= */
+
+        .crew-stepper {
+            height: 34px;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(22px, 1fr)
+                22px
+                minmax(22px, 1fr);
+
+            align-items: center;
+
+            width: 100%;
+
+            background: white;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+        }
+
+
         .crew-stepper button {
             height: 100%;
+
+            padding: 0;
 
             border: none;
             background: transparent;
 
-            font-size: 23px;
-            font-weight: 600;
+            font-size: 17px;
+            font-weight: 650;
 
             cursor: pointer;
+
             touch-action: manipulation;
         }
+
 
         .crew-stepper .minus {
             color: #dc2626;
         }
 
+
         .crew-stepper .plus {
             color: #15803d;
         }
 
+
+        .crew-stepper button:active {
+            background: #f1f5f9;
+        }
+
+
         .crew-value {
             text-align: center;
-            font-size: 20px;
-        }
 
-        /* --------------------------------
-           EXTRA EXPENSES
-        -------------------------------- */
-
-        .extra-card {
-            background: #fff8e7;
-            border: 1.5px solid #f0d99a;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 12px;
-        }
-
-        .extra-title {
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 600;
         }
 
-        .extra-input {
-            position: relative;
-            width: 145px;
-            flex-shrink: 0;
+
+        /* =================================
+           ADDITIONAL
+        ================================= */
+
+        .additional-card {
+            background: #fff8e7;
+
+            border: 1.5px solid #f0d99a;
+
+            box-shadow:
+                0 2px 7px rgba(0, 0, 0, 0.035);
         }
 
-        .extra-input span {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+
+        .additional-title {
+            margin-bottom: 9px;
+
+            font-size: 17px;
+            font-weight: 650;
         }
 
-        .extra-input input {
+
+        .additional-table {
             width: 100%;
-            height: 45px;
+        }
 
-            padding: 0 10px 0 30px;
 
-            border: 1.5px solid #d4d4d4;
-            border-radius: 12px;
+        .additional-row {
+            display: grid;
+
+            grid-template-columns: 1fr 88px 58px;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .additional-row:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .additional-label {
+            font-size: 12px;
+            color: #374151;
+
+            min-width: 0;
+        }
+
+
+        .additional-input,
+        .count-input {
+            position: relative;
+        }
+
+
+        .additional-input span,
+        .count-input span {
+            position: absolute;
+
+            left: 8px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            font-size: 13px;
+            color: #374151;
+
+            pointer-events: none;
+        }
+
+
+        .additional-input input,
+        .count-input input {
+            width: 100%;
+            height: 34px;
+
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
 
             background: white;
 
-            font-size: 17px;
-            text-align: right;
+            font-family: inherit;
+            font-size: 13px;
 
             outline: none;
         }
 
-        /* --------------------------------
+
+        .additional-input input {
+            padding: 0 6px 0 23px;
+
+            text-align: right;
+        }
+
+
+        .count-input input {
+            padding: 0 5px 0 21px;
+
+            text-align: center;
+        }
+
+
+        .additional-input input:focus,
+        .count-input input:focus {
+            border-color: #d5a72a;
+
+            box-shadow:
+                0 0 0 3px rgba(213, 167, 42, 0.10);
+        }
+
+
+        .other-input {
+            grid-column: 2 / 4;
+        }
+
+
+        /* =================================
            SUMMARY
-        -------------------------------- */
+        ================================= */
 
         .summary-card {
             background: white;
+
             border: 1.5px solid #8bc9a8;
 
-            padding: 22px;
+            padding: 17px;
         }
+
 
         .summary-grid {
             display: grid;
+
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+
+            gap: 15px;
 
             align-items: center;
         }
+
 
         .total-section {
             text-align: center;
         }
 
+
         .total-label {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 650;
+
             color: #166534;
-            margin-bottom: 4px;
+
+            margin-bottom: 3px;
         }
 
+
         .total-value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 750;
+
             color: #166534;
+
             white-space: nowrap;
         }
 
+
         .breakdown {
             border-left: 1px solid #d1d5db;
-            padding-left: 20px;
+
+            padding-left: 15px;
         }
+
 
         .breakdown-row {
             display: flex;
+
             justify-content: space-between;
 
-            gap: 12px;
+            gap: 8px;
 
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 12px;
+
+            margin-bottom: 5px;
         }
+
 
         .breakdown-row.total {
             border-top: 1px solid #d1d5db;
-            padding-top: 8px;
-            margin-top: 4px;
+
+            padding-top: 5px;
+            margin-top: 3px;
 
             color: #166534;
+
             font-weight: 650;
         }
 
-        /* --------------------------------
+
+        /* =================================
            BUTTONS
-        -------------------------------- */
+        ================================= */
 
         .buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
 
-            margin-top: 14px;
+            grid-template-columns: 1fr 1fr;
+
+            gap: 9px;
+
+            margin-top: 10px;
         }
 
-        .action-button {
-            height: 46px;
 
-            border-radius: 13px;
+        .action-button {
+            height: 42px;
+
+            border-radius: 11px;
+
             border: 1.5px solid #d1d5db;
 
             background: white;
 
             font-family: inherit;
-            font-size: 16px;
+
+            font-size: 14px;
             font-weight: 600;
 
             cursor: pointer;
+
             touch-action: manipulation;
         }
 
+
         .reset-button {
             background: #16834c;
+
             color: white;
+
             border-color: #16834c;
         }
 
-        .action-button:active {
-            transform: scale(0.98);
-        }
 
-        /* --------------------------------
-           SMALL SCREENS
-        -------------------------------- */
+        /* =================================
+           SMALL PHONES
+        ================================= */
 
-        @media (max-width: 480px) {
+        @media (max-width: 380px) {
 
             body {
-                padding: 10px 8px 25px;
+                padding-left: 5px;
+                padding-right: 5px;
             }
+
 
             .card {
-                padding: 16px;
-                border-radius: 18px;
+                padding: 12px;
             }
 
-            .rate-grid,
-            .crew-grid {
-                gap: 9px;
+
+            .table-card {
+                padding-left: 3px;
+                padding-right: 3px;
             }
 
-            .field-label,
-            .crew-label {
+
+            .day-table th {
+                font-size: 10px;
+            }
+
+
+            .day-table th:first-child {
+                width: 49px;
+            }
+
+
+            .day-table td:first-child {
+                font-size: 12px;
+            }
+
+
+            .crew-stepper {
+                grid-template-columns:
+                    minmax(18px, 1fr)
+                    20px
+                    minmax(18px, 1fr);
+            }
+
+
+            .crew-stepper button {
+                font-size: 15px;
+            }
+
+
+            .crew-value {
                 font-size: 13px;
             }
 
-            .money-input input {
-                font-size: 18px;
-                height: 48px;
-            }
 
             .total-value {
-                font-size: 27px;
+                font-size: 25px;
             }
 
-            .summary-grid {
-                gap: 12px;
+            .additional-row {
+                grid-template-columns: 1fr 78px 52px;
+                gap: 5px;
             }
 
-            .breakdown {
-                padding-left: 12px;
-            }
-
-            .breakdown-row {
-                font-size: 12px;
-            }
-        }
-
-        /* --------------------------------
-           VERY SMALL PHONES
-        -------------------------------- */
-
-        @media (max-width: 360px) {
-
-            .card {
-                padding: 13px;
-            }
-
-            .total-value {
-                font-size: 24px;
-            }
-
-            .breakdown-row {
+            .additional-label {
                 font-size: 11px;
             }
 
-            .extra-title {
-                font-size: 14px;
-            }
-
-            .extra-input {
-                width: 125px;
-            }
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <header class="site-header">
-    <div class="business-name">Golden Knot Photography</div>
-    <div class="page-subtitle">Event Estimate Calculator</div>
+
+    <div class="business-name">
+        Golden Knot Photography
+    </div>
+
+    <div class="page-subtitle">
+        Event Estimate Calculator
+    </div>
+
 </header>
+
 
 <div class="container">
 
-    <!-- ================================
-         SETTINGS
-    ================================= -->
+
+    <!-- =================================
+         DAYS + RATES
+    ================================== -->
 
     <div class="card settings-card">
 
-        <div class="days-title">
-            Number of Days
-        </div>
 
-        <div class="stepper">
+        <div class="days-row">
 
-            <button class="minus" onclick="changeDays(-1)">
-                −
-            </button>
-
-            <div class="stepper-value" id="daysValue">
-                1
+            <div class="days-label">
+                Number of Days
             </div>
 
-            <button class="plus" onclick="changeDays(1)">
-                +
-            </button>
+
+            <div class="days-stepper">
+
+                <button
+                    class="minus"
+                    onclick="changeDays(-1)"
+                >
+                    −
+                </button>
+
+
+                <div
+                    class="days-value"
+                    id="daysValue"
+                >
+                    1
+                </div>
+
+
+                <button
+                    class="plus"
+                    onclick="changeDays(1)"
+                >
+                    +
+                </button>
+
+            </div>
 
         </div>
 
 
         <div class="rate-grid">
 
-            <!-- Photographer Rate -->
 
             <div>
-                <label class="field-label">
-                    Photographers Avg. Amount
+
+                <label class="rate-label">
+                    Photographer Avg.
                 </label>
+
 
                 <div class="money-input">
 
@@ -570,20 +783,24 @@
                         id="photographerRate"
                         type="text"
                         inputmode="numeric"
-                        value="8,000"
-                        oninput="formatRate(this); calculateTotal()"
+                        value="10,000"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
                     >
 
                 </div>
+
             </div>
 
 
-            <!-- Videographer Rate -->
-
             <div>
-                <label class="field-label">
-                    Videographers Avg. Amount
+
+                <label class="rate-label">
+                    Videographer Avg.
                 </label>
+
 
                 <div class="money-input">
 
@@ -594,10 +811,68 @@
                         type="text"
                         inputmode="numeric"
                         value="10,000"
-                        oninput="formatRate(this); calculateTotal()"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
                     >
 
                 </div>
+
+            </div>
+
+
+            <div>
+
+                <label class="rate-label">
+                    Drone Avg.
+                </label>
+
+
+                <div class="money-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="droneRate"
+                        type="text"
+                        inputmode="numeric"
+                        value="5,000"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <label class="rate-label">
+                    LED Wall Avg.
+                </label>
+
+
+                <div class="money-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="ledRate"
+                        type="text"
+                        inputmode="numeric"
+                        value="15,000"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
             </div>
 
         </div>
@@ -605,47 +880,228 @@
     </div>
 
 
-    <!-- ================================
-         GENERATED DAYS
-    ================================= -->
+    <!-- =================================
+         DAY TABLE
+    ================================== -->
 
-    <div id="daysContainer"></div>
+    <div class="card table-card">
+
+        <table class="day-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Day
+                    </th>
+
+                    <th>
+                        📷 Photo
+                    </th>
+
+                    <th>
+                        🎥 Video
+                    </th>
+
+                    <th>
+                        🚁 Drone
+                    </th>
+
+                    <th>
+                        LED
+                    </th>
+
+                </tr>
+
+            </thead>
 
 
-    <!-- ================================
-         EXTRA EXPENSES
-    ================================= -->
+            <tbody id="daysContainer"></tbody>
 
-    <div class="card extra-card">
+        </table>
 
-        <div class="extra-title">
-            Additional Expenses
+    </div>
+
+
+    <!-- =================================
+         ADDITIONAL
+    ================================== -->
+
+    <div class="card additional-card">
+
+        <div class="additional-title">
+            Additional
         </div>
 
-        <div class="extra-input">
 
-            <span>₹</span>
+        <div class="additional-table">
 
-            <input
-                id="extraExpenses"
-                type="text"
-                inputmode="numeric"
-                value="0"
-                oninput="formatRate(this); calculateTotal()"
-            >
+            <!-- Reels / Shorts / Teasers -->
+
+            <div class="additional-row">
+
+                <div class="additional-label">
+                    Reels / Shorts / Teasers
+                </div>
+
+                <div class="additional-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="reelsRate"
+                        type="text"
+                        inputmode="numeric"
+                        value="0"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+                <div class="count-input">
+
+                    <span>×</span>
+
+                    <input
+                        id="reelsCount"
+                        type="number"
+                        min="0"
+                        value="0"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- DVDs -->
+
+            <div class="additional-row">
+
+                <div class="additional-label">
+                    DVDs
+                </div>
+
+                <div class="additional-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="dvdRate"
+                        type="text"
+                        inputmode="numeric"
+                        value="0"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+                <div class="count-input">
+
+                    <span>×</span>
+
+                    <input
+                        id="dvdCount"
+                        type="number"
+                        min="0"
+                        value="0"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Album Sheets -->
+
+            <div class="additional-row">
+
+                <div class="additional-label">
+                    Album Sheets
+                </div>
+
+                <div class="additional-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="albumRate"
+                        type="text"
+                        inputmode="numeric"
+                        value="0"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+                <div class="count-input">
+
+                    <span>×</span>
+
+                    <input
+                        id="albumCount"
+                        type="number"
+                        min="0"
+                        value="0"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Other -->
+
+            <div class="additional-row">
+
+                <div class="additional-label">
+                    Other / Extra
+                </div>
+
+                <div class="additional-input other-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="other"
+                        type="text"
+                        inputmode="numeric"
+                        value="0"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+            </div>
 
         </div>
 
     </div>
 
-
-    <!-- ================================
+    <!-- =================================
          SUMMARY
-    ================================= -->
+    ================================== -->
 
     <div class="card summary-card">
 
         <div class="summary-grid">
+
 
             <div class="total-section">
 
@@ -653,8 +1109,11 @@
                     ESTIMATED TOTAL
                 </div>
 
-                <div class="total-value" id="totalAmount">
-                    ₹10,000
+                <div
+                    class="total-value"
+                    id="totalAmount"
+                >
+                    ₹25,000
                 </div>
 
             </div>
@@ -662,24 +1121,82 @@
 
             <div class="breakdown">
 
-                <div class="breakdown-row">
-                    <span>Photographers</span>
-                    <span id="photographerTotal">₹0</span>
-                </div>
 
                 <div class="breakdown-row">
-                    <span>Videographers</span>
-                    <span id="videographerTotal">₹0</span>
+
+                    <span>
+                        Photographers
+                    </span>
+
+                    <span id="photographerTotal">
+                        ₹10,000
+                    </span>
+
                 </div>
 
+
                 <div class="breakdown-row">
-                    <span>Additional</span>
-                    <span id="extraTotal">₹0</span>
+
+                    <span>
+                        Videographers
+                    </span>
+
+                    <span id="videographerTotal">
+                        ₹10,000
+                    </span>
+
                 </div>
+
+
+                <div class="breakdown-row">
+
+                    <span>
+                        Drones
+                    </span>
+
+                    <span id="droneTotal">
+                        ₹0
+                    </span>
+
+                </div>
+
+
+                <div class="breakdown-row">
+
+                    <span>
+                        LED Walls
+                    </span>
+
+                    <span id="ledTotal">
+                        ₹0
+                    </span>
+
+                </div>
+
+
+                <div class="breakdown-row">
+
+                    <span>
+                        Additional
+                    </span>
+
+                    <span id="additionalTotal">
+                        ₹0
+                    </span>
+
+                </div>
+
 
                 <div class="breakdown-row total">
-                    <span>TOTAL</span>
-                    <span id="breakdownTotal">₹10,000</span>
+
+                    <span>
+                        TOTAL
+                    </span>
+
+                    <span id="breakdownTotal">
+                        ₹20,000
+                    </span>
+
                 </div>
 
             </div>
@@ -689,9 +1206,9 @@
     </div>
 
 
-    <!-- ================================
-         ACTION BUTTONS
-    ================================= -->
+    <!-- =================================
+         ACTIONS
+    ================================== -->
 
     <div class="buttons">
 
@@ -702,6 +1219,7 @@
             ↻ &nbsp; Reset
         </button>
 
+
         <button
             class="action-button"
             onclick="window.print()"
@@ -711,72 +1229,112 @@
 
     </div>
 
+
 </div>
 
 
 <script>
 
+
     /* =================================
-       CALCULATOR STATE
+       STATE
     ================================= */
 
     let numberOfDays = 1;
 
 
     /* =================================
-       CURRENCY FORMAT
+       CURRENCY
     ================================= */
 
     function formatCurrency(amount) {
 
-        return "₹" + Math.round(amount).toLocaleString("en-IN");
+        return "₹" +
+            Math.round(amount)
+                .toLocaleString("en-IN");
 
-    }
-
-    function formatRate(input) {
-
-        // Remove everything except digits
-        let value = input.value.replace(/\D/g, "");
-
-        if (value === "") {
-            input.value = "";
-            return;
-        }
-
-        // Indian number formatting
-        input.value = Number(value).toLocaleString("en-IN");
     }
 
 
     /* =================================
-       CHANGE NUMBER OF DAYS
+       FORMAT RATE
+    ================================= */
+
+    function formatRate(input) {
+
+        let value =
+            input.value.replace(/\D/g, "");
+
+
+        if (value === "") {
+
+            input.value = "";
+
+            return;
+
+        }
+
+
+        input.value =
+            Number(value).toLocaleString("en-IN");
+
+    }
+
+
+    /* =================================
+       READ MONEY
+    ================================= */
+
+    function readMoneyInput(id) {
+
+        return Number(
+
+            document
+                .getElementById(id)
+                .value
+                .replace(/,/g, "")
+
+        ) || 0;
+
+    }
+
+
+    /* =================================
+       CHANGE DAYS
     ================================= */
 
     function changeDays(change) {
 
         numberOfDays += change;
 
-        // Minimum 1 day
+
         if (numberOfDays < 1) {
+
             numberOfDays = 1;
+
         }
 
-        // Maximum 30 days
-        if (numberOfDays > 30) {
-            numberOfDays = 30;
+
+        if (numberOfDays > 5) {
+
+            numberOfDays = 5;
+
         }
 
-        document.getElementById("daysValue").textContent =
-            numberOfDays;
+
+        document.getElementById("daysValue")
+            .textContent = numberOfDays;
+
 
         generateDays();
 
         calculateTotal();
+
     }
 
 
     /* =================================
-       GENERATE DAY CARDS
+       GENERATE TABLE ROWS
     ================================= */
 
     function generateDays() {
@@ -784,124 +1342,248 @@
         const container =
             document.getElementById("daysContainer");
 
+
         container.innerHTML = "";
 
 
-        for (let i = 1; i <= numberOfDays; i++) {
-
-            const dayCard =
-                document.createElement("div");
-
-            dayCard.className = "card day-card";
-
-
-            dayCard.innerHTML = `
-
-                <div class="day-heading">
-
-                    <div class="day-number">
-                        ${i}
-                    </div>
-
-                    <div class="day-title">
-                        Day - ${i}
-                    </div>
-
-                </div>
+        for (
+            let i = 1;
+            i <= numberOfDays;
+            i++
+        ) {
 
 
-                <div class="crew-grid">
+            const row =
+                document.createElement("tr");
 
-                    <!-- Photographer -->
 
-                    <div>
+            row.innerHTML = `
 
-                        <label class="crew-label">
-                            Photographers
-                        </label>
+                <td>
+                    Day-${i}
+                </td>
 
-                        <div class="crew-stepper">
 
-                            <button
-                                class="minus"
-                                onclick="changeCrew(${i}, 'photographer', -1)"
-                            >
-                                −
-                            </button>
+                <!-- Photographer -->
 
-                            <div
-                                class="crew-value"
-                                id="photo-${i}"
-                            >
-                                1
-                            </div>
+                <td>
 
-                            <button
-                                class="plus"
-                                onclick="changeCrew(${i}, 'photographer', 1)"
-                            >
-                                +
-                            </button>
+                    <div class="crew-stepper">
 
+                        <button
+                            class="minus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'photographer',
+                                    -1
+                                )
+                            "
+                        >
+                            −
+                        </button>
+
+
+                        <div
+                            class="crew-value"
+                            id="photo-${i}"
+                        >
+                            1
                         </div>
 
+
+                        <button
+                            class="plus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'photographer',
+                                    1
+                                )
+                            "
+                        >
+                            +
+                        </button>
+
                     </div>
 
+                </td>
 
-                    <!-- Videographer -->
 
-                    <div>
+                <!-- Videographer -->
 
-                        <label class="crew-label">
-                            Videographers
-                        </label>
+                <td>
 
-                        <div class="crew-stepper">
+                    <div class="crew-stepper">
 
-                            <button
-                                class="minus"
-                                onclick="changeCrew(${i}, 'video', -1)"
-                            >
-                                −
-                            </button>
+                        <button
+                            class="minus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'video',
+                                    -1
+                                )
+                            "
+                        >
+                            −
+                        </button>
 
-                            <div
-                                class="crew-value"
-                                id="video-${i}"
-                            >
-                                1
-                            </div>
 
-                            <button
-                                class="plus"
-                                onclick="changeCrew(${i}, 'video', 1)"
-                            >
-                                +
-                            </button>
-
+                        <div
+                            class="crew-value"
+                            id="video-${i}"
+                        >
+                            1
                         </div>
 
+
+                        <button
+                            class="plus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'video',
+                                    1
+                                )
+                            "
+                        >
+                            +
+                        </button>
+
                     </div>
 
-                </div>
+                </td>
+
+
+                <!-- Drone -->
+
+                <td>
+
+                    <div class="crew-stepper">
+
+                        <button
+                            class="minus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'drone',
+                                    -1
+                                )
+                            "
+                        >
+                            −
+                        </button>
+
+
+                        <div
+                            class="crew-value"
+                            id="drone-${i}"
+                        >
+                            0
+                        </div>
+
+
+                        <button
+                            class="plus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'drone',
+                                    1
+                                )
+                            "
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </td>
+
+
+                <!-- LED -->
+
+                <td>
+
+                    <div class="crew-stepper">
+
+                        <button
+                            class="minus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'led',
+                                    -1
+                                )
+                            "
+                        >
+                            −
+                        </button>
+
+
+                        <div
+                            class="crew-value"
+                            id="led-${i}"
+                        >
+                            0
+                        </div>
+
+
+                        <button
+                            class="plus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'led',
+                                    1
+                                )
+                            "
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </td>
+
             `;
 
 
-            container.appendChild(dayCard);
+            container.appendChild(row);
+
         }
 
     }
 
 
     /* =================================
-       CHANGE CREW COUNT
+       CHANGE CREW
     ================================= */
 
-    function changeCrew(day, type, change) {
+    function changeCrew(
+        day,
+        type,
+        change
+    ) {
+
+
+        const prefixes = {
+
+            photographer: "photo",
+
+            video: "video",
+
+            drone: "drone",
+
+            led: "led"
+
+        };
+
 
         const element =
             document.getElementById(
-                `${type === "photographer" ? "photo" : "video"}-${day}`
+                `${prefixes[type]}-${day}`
             );
 
 
@@ -912,15 +1594,17 @@
         value += change;
 
 
-        // Minimum = 0
         if (value < 0) {
+
             value = 0;
+
         }
 
 
-        // Maximum = 20
-        if (value > 20) {
-            value = 20;
+        if (value > 9) {
+
+            value = 9;
+
         }
 
 
@@ -928,91 +1612,211 @@
 
 
         calculateTotal();
+
     }
 
 
     /* =================================
-       CALCULATE TOTAL
+       CALCULATE
     ================================= */
 
     function calculateTotal() {
 
+
         const photographerRate =
-            Number(
-                document.getElementById("photographerRate").value.replace(/,/g, "")
-            ) || 0;
+            readMoneyInput(
+                "photographerRate"
+            );
 
 
         const videographerRate =
+            readMoneyInput(
+                "videographerRate"
+            );
+
+
+        const droneRate =
+            readMoneyInput(
+                "droneRate"
+            );
+
+
+        const ledRate =
+            readMoneyInput(
+                "ledRate"
+            );
+
+
+        const reelsRate =
+            readMoneyInput("reelsRate");
+
+        const reelsCount =
             Number(
-                document.getElementById("videographerRate").value.replace(/,/g, "")
+                document.getElementById("reelsCount").value
             ) || 0;
 
 
-        const extraExpenses =
+        const dvdRate =
+            readMoneyInput("dvdRate");
+
+        const dvdCount =
             Number(
-                document.getElementById("extraExpenses").value.replace(/,/g, "")
+                document.getElementById("dvdCount").value
             ) || 0;
+
+
+        const albumRate =
+            readMoneyInput("albumRate");
+
+        const albumCount =
+            Number(
+                document.getElementById("albumCount").value
+            ) || 0;
+
+
+        const other =
+            readMoneyInput("other");
 
 
         let photographerTotal = 0;
+
         let videographerTotal = 0;
 
+        let droneTotal = 0;
 
-        for (let i = 1; i <= numberOfDays; i++) {
-
-            const photoElement =
-                document.getElementById(`photo-${i}`);
-
-            const videoElement =
-                document.getElementById(`video-${i}`);
+        let ledTotal = 0;
 
 
-            if (!photoElement || !videoElement) {
-                continue;
-            }
+        for (
+            let i = 1;
+            i <= numberOfDays;
+            i++
+        ) {
 
 
             const photographers =
-                Number(photoElement.textContent);
+                Number(
+                    document
+                        .getElementById(`photo-${i}`)
+                        .textContent
+                );
 
 
             const videographers =
-                Number(videoElement.textContent);
+                Number(
+                    document
+                        .getElementById(`video-${i}`)
+                        .textContent
+                );
+
+
+            const drones =
+                Number(
+                    document
+                        .getElementById(`drone-${i}`)
+                        .textContent
+                );
+
+
+            const ledWalls =
+                Number(
+                    document
+                        .getElementById(`led-${i}`)
+                        .textContent
+                );
 
 
             photographerTotal +=
-                photographers * photographerRate;
+                photographers *
+                photographerRate;
 
 
             videographerTotal +=
-                videographers * videographerRate;
+                videographers *
+                videographerRate;
+
+
+            droneTotal +=
+                drones *
+                droneRate;
+
+
+            ledTotal +=
+                ledWalls *
+                ledRate;
 
         }
+
+
+        const additionalTotal =
+            (reelsRate * reelsCount) +
+            (dvdRate * dvdCount) +
+            (albumRate * albumCount) +
+            other;
 
 
         const total =
             photographerTotal +
             videographerTotal +
-            extraExpenses;
+            droneTotal +
+            ledTotal +
+            additionalTotal;
 
 
-        /* Update display */
+        /* --------------------------------
+           UPDATE
+        -------------------------------- */
 
-        document.getElementById("photographerTotal")
-            .textContent = formatCurrency(photographerTotal);
+        document.getElementById(
+            "photographerTotal"
+        ).textContent =
+            formatCurrency(
+                photographerTotal
+            );
 
-        document.getElementById("videographerTotal")
-            .textContent = formatCurrency(videographerTotal);
 
-        document.getElementById("extraTotal")
-            .textContent = formatCurrency(extraExpenses);
+        document.getElementById(
+            "videographerTotal"
+        ).textContent =
+            formatCurrency(
+                videographerTotal
+            );
 
-        document.getElementById("totalAmount")
-            .textContent = formatCurrency(total);
 
-        document.getElementById("breakdownTotal")
-            .textContent = formatCurrency(total);
+        document.getElementById(
+            "droneTotal"
+        ).textContent =
+            formatCurrency(
+                droneTotal
+            );
+
+
+        document.getElementById(
+            "ledTotal"
+        ).textContent =
+            formatCurrency(
+                ledTotal
+            );
+
+
+        document.getElementById(
+            "additionalTotal"
+        ).textContent =
+            formatCurrency(
+                additionalTotal
+            );
+
+
+        document.getElementById(
+            "totalAmount"
+        ).textContent =
+            formatCurrency(total);
+
+
+        document.getElementById(
+            "breakdownTotal"
+        ).textContent =
+            formatCurrency(total);
 
     }
 
@@ -1023,22 +1827,65 @@
 
     function resetCalculator() {
 
+
         numberOfDays = 1;
 
-        document.getElementById("daysValue")
-            .textContent = "1";
+
+        document.getElementById(
+            "daysValue"
+        ).textContent = "1";
 
 
-        document.getElementById("photographerRate")
-            .value = "8,000";
+        document.getElementById(
+            "photographerRate"
+        ).value = "10,000";
 
 
-        document.getElementById("videographerRate")
-            .value = "10,000";
+        document.getElementById(
+            "videographerRate"
+        ).value = "10,000";
 
 
-        document.getElementById("extraExpenses")
-            .value = "0";
+        document.getElementById(
+            "droneRate"
+        ).value = "5,000";
+
+
+        document.getElementById(
+            "ledRate"
+        ).value = "15,000";
+
+
+        document.getElementById(
+            "reelsRate"
+        ).value = "0";
+
+        document.getElementById(
+            "reelsCount"
+        ).value = 0;
+
+
+        document.getElementById(
+            "dvdRate"
+        ).value = "0";
+
+        document.getElementById(
+            "dvdCount"
+        ).value = 0;
+
+
+        document.getElementById(
+            "albumRate"
+        ).value = "0";
+
+        document.getElementById(
+            "albumCount"
+        ).value = 0;
+
+
+        document.getElementById(
+            "other"
+        ).value = "0";
 
 
         generateDays();
@@ -1056,8 +1903,10 @@
 
     calculateTotal();
 
+
 </script>
 
-</body>
-</html>
 
+</body>
+
+</html>
