@@ -49,7 +49,7 @@
 
         /* =================================
            HEADER
-        ================================== */
+        ================================= */
 
         .site-header {
             text-align: center;
@@ -73,7 +73,7 @@
 
         /* =================================
            GENERAL CARD
-        ================================== */
+        ================================= */
 
         .card {
             border-radius: 18px;
@@ -85,7 +85,7 @@
 
         /* =================================
            RATE / DAYS CARD
-        ================================== */
+        ================================= */
 
         .settings-card {
             background: #edf8f2;
@@ -115,7 +115,7 @@
 
         /* =================================
            DAYS STEPPER
-        ================================== */
+        ================================= */
 
         .days-stepper {
             height: 42px;
@@ -174,7 +174,7 @@
 
         /* =================================
            RATE GRID
-        ================================== */
+        ================================= */
 
         .rate-grid {
             display: grid;
@@ -252,7 +252,7 @@
 
         /* =================================
            DAY TABLE
-        ================================== */
+        ================================= */
 
         .table-card {
             background: #f1f6ff;
@@ -289,6 +289,7 @@
 
         .day-table th:first-child {
             text-align: left;
+
             width: 54px;
         }
 
@@ -314,7 +315,7 @@
 
         /* =================================
            CREW STEPPER
-        ================================== */
+        ================================= */
 
         .crew-stepper {
             height: 34px;
@@ -382,7 +383,7 @@
 
         /* =================================
            ADDITIONAL
-        ================================== */
+        ================================= */
 
         .additional-card {
             background: #fff8e7;
@@ -402,25 +403,8 @@
         }
 
 
-        .additional-header {
-            display: grid;
-
-            grid-template-columns: 1fr 88px 70px;
-
-            gap: 7px;
-
-            margin-bottom: 5px;
-
-            color: #6b7280;
-
-            font-size: 10px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-
-        .additional-header span:first-child {
-            text-align: left;
+        .additional-table {
+            width: 100%;
         }
 
 
@@ -450,64 +434,14 @@
         }
 
 
-        .additional-input {
+        .additional-input,
+        .count-input {
             position: relative;
-
-            height: 25px;
         }
 
 
-        .count-stepper {
-            height: 25px;
-
-            display: grid;
-
-            grid-template-columns: 22px 1fr 22px;
-
-            align-items: center;
-
-            background: white;
-
-            border: 1px solid #d4d4d4;
-            border-radius: 8px;
-
-            overflow: hidden;
-        }
-
-
-        .count-stepper button {
-            height: 100%;
-
-            padding: 0;
-
-            border: none;
-            background: transparent;
-
-            font-size: 15px;
-            font-weight: 650;
-
-            cursor: pointer;
-
-            touch-action: manipulation;
-        }
-
-
-        .count-stepper .count-minus {
-            color: #dc2626;
-        }
-
-
-        .count-stepper .count-plus {
-            color: #15803d;
-        }
-
-
-        .count-stepper button:active {
-            background: #f1f5f9;
-        }
-
-
-        .additional-input span {
+        .additional-input span,
+        .count-input span {
             position: absolute;
 
             left: 6px;
@@ -546,37 +480,15 @@
         }
 
 
-        .count-stepper input {
-            width: 100%;
-            height: 100%;
-
-            padding: 0;
-
-            border: none;
-
-            background: transparent;
+        .count-input input {
+            padding: 0 5px 0 33px;
 
             text-align: center;
-
-            font-family: inherit;
-            font-size: 13px;
-
-            outline: none;
-
-            appearance: textfield;
-            -moz-appearance: textfield;
-        }
-
-
-        .count-stepper input::-webkit-inner-spin-button,
-        .count-stepper input::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
         }
 
 
         .additional-input input:focus,
-        .count-stepper:focus-within {
+        .count-input input:focus {
             border-color: #d5a72a;
 
             box-shadow:
@@ -591,7 +503,7 @@
 
         /* =================================
            SUMMARY
-        ================================== */
+        ================================= */
 
         .summary-card {
             background: white;
@@ -672,7 +584,7 @@
 
         /* =================================
            BUTTONS
-        ================================== */
+        ================================= */
 
         .buttons {
             display: grid;
@@ -716,7 +628,7 @@
 
         /* =================================
            SMALL PHONES
-        ================================== */
+        ================================= */
 
         @media (max-width: 380px) {
 
@@ -774,13 +686,10 @@
                 font-size: 25px;
             }
 
-
-            .additional-row,
-            .additional-header {
+            .additional-row {
                 grid-template-columns: 1fr 78px 52px;
                 gap: 5px;
             }
-
 
             .additional-label {
                 font-size: 11px;
@@ -910,6 +819,58 @@
 
             </div>
 
+
+            <div>
+
+                <label class="rate-label">
+                    Drone Avg.
+                </label>
+
+
+                <div class="money-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="droneRate"
+                        type="text"
+                        inputmode="numeric"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <label class="rate-label">
+                    LED Wall Avg.
+                </label>
+
+
+                <div class="money-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="ledRate"
+                        type="text"
+                        inputmode="numeric"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
@@ -939,6 +900,14 @@
                         🎥 Videographers
                     </th>
 
+                    <th>
+                        🚁 Drones
+                    </th>
+
+                    <th>
+                        LED Walls
+                    </th>
+
                 </tr>
 
             </thead>
@@ -962,30 +931,154 @@
         </div>
 
 
-        <div class="additional-header">
+        <div class="additional-table">
 
-            <span>
-                Item
-            </span>
+            <!-- Reels / Shorts / Teasers -->
 
-            <span>
-                Rate
-            </span>
+            <div class="additional-row">
 
-            <span>
-                Count
-            </span>
+                <div class="additional-label">
+                    Reels / Shorts / Teasers
+                </div>
+
+                <div class="additional-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="reelsRate"
+                        type="text"
+                        inputmode="numeric"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+                <div class="count-input">
+
+                    <span>×</span>
+
+                    <input
+                        id="reelsCount"
+                        type="number"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- DVDs -->
+
+            <div class="additional-row">
+
+                <div class="additional-label">
+                    DVDs
+                </div>
+
+                <div class="additional-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="dvdRate"
+                        type="text"
+                        inputmode="numeric"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+                <div class="count-input">
+
+                    <span>×</span>
+
+                    <input
+                        id="dvdCount"
+                        type="number"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Album Sheets -->
+
+            <div class="additional-row">
+
+                <div class="additional-label">
+                    Album Sheets
+                </div>
+
+                <div class="additional-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="albumRate"
+                        type="text"
+                        inputmode="numeric"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+                <div class="count-input">
+
+                    <span>×</span>
+
+                    <input
+                        id="albumCount"
+                        type="number"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Other -->
+
+            <div class="additional-row">
+
+                <div class="additional-label">
+                    Other / Extra
+                </div>
+
+                <div class="additional-input other-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="other"
+                        type="text"
+                        inputmode="numeric"
+                        oninput="
+                            formatRate(this);
+                            calculateTotal();
+                        "
+                    >
+
+                </div>
+
+            </div>
 
         </div>
 
-
-        <div
-            class="additional-table"
-            id="additionalContainer"
-        ></div>
-
     </div>
-
 
     <!-- =================================
          SUMMARY
@@ -1006,7 +1099,7 @@
                     class="total-value"
                     id="totalAmount"
                 >
-                    ₹0
+                    ₹25,000
                 </div>
 
             </div>
@@ -1022,7 +1115,7 @@
                     </span>
 
                     <span id="photographerTotal">
-                        ₹0
+                        ₹10,000
                     </span>
 
                 </div>
@@ -1035,6 +1128,32 @@
                     </span>
 
                     <span id="videographerTotal">
+                        ₹10,000
+                    </span>
+
+                </div>
+
+
+                <div class="breakdown-row">
+
+                    <span>
+                        Drones
+                    </span>
+
+                    <span id="droneTotal">
+                        ₹0
+                    </span>
+
+                </div>
+
+
+                <div class="breakdown-row">
+
+                    <span>
+                        LED Walls
+                    </span>
+
+                    <span id="ledTotal">
                         ₹0
                     </span>
 
@@ -1100,33 +1219,19 @@
 </div>
 
 
-<!--
-===========================================================
-IMPORTANT:
-
-prices.js contains ONLY the default prices/item definitions.
-Keep it in the same folder as index.html.
-
-It is loaded first so index.html can use PRICES.
-===========================================================
--->
-
-<script src="prices.js"></script>
-
-
 <script>
 
 
     /* =================================
        STATE
-    ================================== */
+    ================================= */
 
     let numberOfDays = 1;
 
 
     /* =================================
        CURRENCY
-    ================================== */
+    ================================= */
 
     function formatCurrency(amount) {
 
@@ -1139,7 +1244,7 @@ It is loaded first so index.html can use PRICES.
 
     /* =================================
        FORMAT RATE
-    ================================== */
+    ================================= */
 
     function formatRate(input) {
 
@@ -1164,21 +1269,17 @@ It is loaded first so index.html can use PRICES.
 
     /* =================================
        READ MONEY
-    ================================== */
+    ================================= */
 
     function readMoneyInput(id) {
 
-        const input =
-            document.getElementById(id);
-
-
-        if (!input) {
-            return 0;
-        }
-
-
         return Number(
-            input.value.replace(/,/g, "")
+
+            document
+                .getElementById(id)
+                .value
+                .replace(/,/g, "")
+
         ) || 0;
 
     }
@@ -1186,7 +1287,7 @@ It is loaded first so index.html can use PRICES.
 
     /* =================================
        CHANGE DAYS
-    ================================== */
+    ================================= */
 
     function changeDays(change) {
 
@@ -1194,12 +1295,16 @@ It is loaded first so index.html can use PRICES.
 
 
         if (numberOfDays < 1) {
+
             numberOfDays = 1;
+
         }
 
 
         if (numberOfDays > 5) {
+
             numberOfDays = 5;
+
         }
 
 
@@ -1215,8 +1320,8 @@ It is loaded first so index.html can use PRICES.
 
 
     /* =================================
-       GENERATE DAY TABLE
-    ================================== */
+       GENERATE TABLE ROWS
+    ================================= */
 
     function generateDays() {
 
@@ -1233,6 +1338,7 @@ It is loaded first so index.html can use PRICES.
             i++
         ) {
 
+
             const row =
                 document.createElement("tr");
 
@@ -1243,6 +1349,8 @@ It is loaded first so index.html can use PRICES.
                     Day-${i}
                 </td>
 
+
+                <!-- Photographer -->
 
                 <td>
 
@@ -1288,6 +1396,8 @@ It is loaded first so index.html can use PRICES.
                 </td>
 
 
+                <!-- Videographer -->
+
                 <td>
 
                     <div class="crew-stepper">
@@ -1297,7 +1407,7 @@ It is loaded first so index.html can use PRICES.
                             onclick="
                                 changeCrew(
                                     ${i},
-                                    'videographer',
+                                    'video',
                                     -1
                                 )
                             "
@@ -1319,7 +1429,99 @@ It is loaded first so index.html can use PRICES.
                             onclick="
                                 changeCrew(
                                     ${i},
-                                    'videographer',
+                                    'video',
+                                    1
+                                )
+                            "
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </td>
+
+
+                <!-- Drone -->
+
+                <td>
+
+                    <div class="crew-stepper">
+
+                        <button
+                            class="minus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'drone',
+                                    -1
+                                )
+                            "
+                        >
+                            −
+                        </button>
+
+
+                        <div
+                            class="crew-value"
+                            id="drone-${i}"
+                        >
+                            0
+                        </div>
+
+
+                        <button
+                            class="plus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'drone',
+                                    1
+                                )
+                            "
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </td>
+
+
+                <!-- LED -->
+
+                <td>
+
+                    <div class="crew-stepper">
+
+                        <button
+                            class="minus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'led',
+                                    -1
+                                )
+                            "
+                        >
+                            −
+                        </button>
+
+
+                        <div
+                            class="crew-value"
+                            id="led-${i}"
+                        >
+                            0
+                        </div>
+
+
+                        <button
+                            class="plus"
+                            onclick="
+                                changeCrew(
+                                    ${i},
+                                    'led',
                                     1
                                 )
                             "
@@ -1343,7 +1545,7 @@ It is loaded first so index.html can use PRICES.
 
     /* =================================
        CHANGE CREW
-    ================================== */
+    ================================= */
 
     function changeCrew(
         day,
@@ -1353,17 +1555,15 @@ It is loaded first so index.html can use PRICES.
 
         const prefixes = {
             photographer: "photo",
-            videographer: "video"
+            video: "video",
+            drone: "drone",
+            led: "led"
         };
-
-
-        const prefix =
-            prefixes[type];
 
 
         const element =
             document.getElementById(
-                `${prefix}-${day}`
+                `${prefixes[type]}-${day}`
             );
 
 
@@ -1383,203 +1583,16 @@ It is loaded first so index.html can use PRICES.
             value = 9;
         }
 
-
         element.textContent = value;
 
-
         calculateTotal();
-
-    }
-
-
-    /* =================================
-       GENERATE ADDITIONAL ITEMS
-    ================================== */
-
-    function generateAdditionalItems() {
-
-        const container =
-            document.getElementById(
-                "additionalContainer"
-            );
-
-
-        container.innerHTML = "";
-
-
-        for (
-            const [key, item]
-            of Object.entries(PRICES.additional)
-        ) {
-
-            const row =
-                document.createElement("div");
-
-
-            row.className =
-                "additional-row";
-
-
-            row.innerHTML = `
-
-                <div
-                    class="additional-label"
-                >
-                    ${item.name}
-                </div>
-
-
-                <div
-                    class="additional-input"
-                >
-
-                    <span>₹</span>
-
-                    <input
-                        id="${key}Rate"
-                        type="text"
-                        inputmode="numeric"
-                        oninput="
-                            formatRate(this);
-                            calculateTotal();
-                        "
-                    >
-
-                </div>
-
-
-                <div class="count-stepper">
-
-                    <button
-                        type="button"
-                        class="count-minus"
-                        onclick="
-                            changeAdditionalCount('${key}', -1)
-                        "
-                    >
-                        −
-                    </button>
-
-                    <input
-                        id="${key}Count"
-                        type="text"
-                        inputmode="numeric"
-                        pattern="[0-9]*"
-                        value="0"
-                        oninput="
-                            sanitizeCount(this);
-                            calculateTotal();
-                        "
-                    >
-
-                    <button
-                        type="button"
-                        class="count-plus"
-                        onclick="
-                            changeAdditionalCount('${key}', 1)
-                        "
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            `;
-
-
-            container.appendChild(row);
-
-        }
-
-
-        /* --------------------------------
-           OTHER / EXTRA
-        -------------------------------- */
-
-        const otherRow =
-            document.createElement("div");
-
-
-        otherRow.className =
-            "additional-row";
-
-
-        otherRow.innerHTML = `
-
-            <div class="additional-label">
-                Other / Extra
-            </div>
-
-
-            <div
-                class="additional-input other-input"
-            >
-
-                <span>₹</span>
-
-                <input
-                    id="other"
-                    type="text"
-                    inputmode="numeric"
-                    oninput="
-                        formatRate(this);
-                        calculateTotal();
-                    "
-                >
-
-            </div>
-
-        `;
-
-
-        container.appendChild(otherRow);
-
-    }
-
-
-    /* =================================
-       CHANGE ADDITIONAL COUNT
-    ================================== */
-
-    function changeAdditionalCount(key, change) {
-
-        const input =
-            document.getElementById(`${key}Count`);
-
-        let value = parseInt(input.value, 10);
-
-        if (Number.isNaN(value)) {
-            value = 0;
-        }
-
-        value += change;
-
-        if (value < 0) {
-            value = 0;
-        }
-
-        input.value = value;
-
-        calculateTotal();
-
-    }
-
-
-    /* =================================
-       SANITIZE ADDITIONAL COUNT
-    ================================== */
-
-    function sanitizeCount(input) {
-
-        input.value =
-            input.value.replace(/\D/g, "");
 
     }
 
 
     /* =================================
        CALCULATE
-    ================================== */
+    ================================= */
 
     function calculateTotal() {
 
@@ -1595,9 +1608,56 @@ It is loaded first so index.html can use PRICES.
             );
 
 
+        const droneRate =
+            readMoneyInput(
+                "droneRate"
+            );
+
+
+        const ledRate =
+            readMoneyInput(
+                "ledRate"
+            );
+
+
+        const reelsRate =
+            readMoneyInput("reelsRate");
+
+        const reelsCount =
+            Number(
+                document.getElementById("reelsCount").value
+            ) || 0;
+
+
+        const dvdRate =
+            readMoneyInput("dvdRate");
+
+        const dvdCount =
+            Number(
+                document.getElementById("dvdCount").value
+            ) || 0;
+
+
+        const albumRate =
+            readMoneyInput("albumRate");
+
+        const albumCount =
+            Number(
+                document.getElementById("albumCount").value
+            ) || 0;
+
+
+        const other =
+            readMoneyInput("other");
+
+
         let photographerTotal = 0;
 
         let videographerTotal = 0;
+
+        let droneTotal = 0;
+
+        let ledTotal = 0;
 
 
         for (
@@ -1606,12 +1666,11 @@ It is loaded first so index.html can use PRICES.
             i++
         ) {
 
+
             const photographers =
                 Number(
                     document
-                        .getElementById(
-                            `photo-${i}`
-                        )
+                        .getElementById(`photo-${i}`)
                         .textContent
                 );
 
@@ -1619,9 +1678,23 @@ It is loaded first so index.html can use PRICES.
             const videographers =
                 Number(
                     document
-                        .getElementById(
-                            `video-${i}`
-                        )
+                        .getElementById(`video-${i}`)
+                        .textContent
+                );
+
+
+            const drones =
+                Number(
+                    document
+                        .getElementById(`drone-${i}`)
+                        .textContent
+                );
+
+
+            const ledWalls =
+                Number(
+                    document
+                        .getElementById(`led-${i}`)
                         .textContent
                 );
 
@@ -1635,62 +1708,36 @@ It is loaded first so index.html can use PRICES.
                 videographers *
                 videographerRate;
 
-        }
+
+            droneTotal +=
+                drones *
+                droneRate;
 
 
-        /* --------------------------------
-           ADDITIONAL
-        -------------------------------- */
-
-        let additionalTotal = 0;
-
-
-        for (
-            const key
-            of Object.keys(PRICES.additional)
-        ) {
-
-            const rate =
-                readMoneyInput(
-                    `${key}Rate`
-                );
-
-
-            const count =
-                Number(
-                    document
-                        .getElementById(
-                            `${key}Count`
-                        )
-                        .value
-                ) || 0;
-
-
-            additionalTotal +=
-                rate * count;
+            ledTotal +=
+                ledWalls *
+                ledRate;
 
         }
 
 
-        const other =
-            readMoneyInput("other");
+        const additionalTotal =
+            (reelsRate * reelsCount) +
+            (dvdRate * dvdCount) +
+            (albumRate * albumCount) +
+            other;
 
-
-        additionalTotal += other;
-
-
-        /* --------------------------------
-           TOTAL
-        -------------------------------- */
 
         const total =
             photographerTotal +
             videographerTotal +
+            droneTotal +
+            ledTotal +
             additionalTotal;
 
 
         /* --------------------------------
-           UPDATE DISPLAY
+           UPDATE
         -------------------------------- */
 
         document.getElementById(
@@ -1706,6 +1753,22 @@ It is loaded first so index.html can use PRICES.
         ).textContent =
             formatCurrency(
                 videographerTotal
+            );
+
+
+        document.getElementById(
+            "droneTotal"
+        ).textContent =
+            formatCurrency(
+                droneTotal
+            );
+
+
+        document.getElementById(
+            "ledTotal"
+        ).textContent =
+            formatCurrency(
+                ledTotal
             );
 
 
@@ -1733,9 +1796,10 @@ It is loaded first so index.html can use PRICES.
 
     /* =================================
        RESET
-    ================================== */
+    ================================= */
 
     function resetCalculator() {
+
 
         numberOfDays = 1;
 
@@ -1747,55 +1811,49 @@ It is loaded first so index.html can use PRICES.
 
         document.getElementById(
             "photographerRate"
-        ).value =
-            PRICES.dayRates.photographer
-                .toLocaleString("en-IN");
+        ).value = "8,000";
 
 
         document.getElementById(
             "videographerRate"
-        ).value =
-            PRICES.dayRates.videographer
-                .toLocaleString("en-IN");
+        ).value = "12,000";
 
 
-        /* --------------------------------
-           Reset additional rates/counts
-        -------------------------------- */
-
-        for (
-            const [key, item]
-            of Object.entries(PRICES.additional)
-        ) {
-
-            const rateInput =
-                document.getElementById(
-                    `${key}Rate`
-                );
+        document.getElementById(
+            "droneRate"
+        ).value = "20,000";
 
 
-            const countInput =
-                document.getElementById(
-                    `${key}Count`
-                );
+        document.getElementById(
+            "ledRate"
+        ).value = "15,000";
 
 
-            if (rateInput) {
+        document.getElementById(
+            "reelsRate"
+        ).value = "1,000";
 
-                rateInput.value =
-                    item.rate
-                        .toLocaleString("en-IN");
-
-            }
+        document.getElementById(
+            "reelsCount"
+        ).value = 0;
 
 
-            if (countInput) {
+        document.getElementById(
+            "dvdRate"
+        ).value = "2,000";
 
-                countInput.value = 0;
+        document.getElementById(
+            "dvdCount"
+        ).value = 0;
 
-            }
 
-        }
+        document.getElementById(
+            "albumRate"
+        ).value = "100";
+
+        document.getElementById(
+            "albumCount"
+        ).value = 0;
 
 
         document.getElementById(
@@ -1812,11 +1870,12 @@ It is loaded first so index.html can use PRICES.
 
     /* =================================
        INITIALIZE
-    ================================== */
-
-    generateAdditionalItems();
+    ================================= */
 
     resetCalculator();
+    // generateDays();
+
+    // calculateTotal();
 
 
 </script>
