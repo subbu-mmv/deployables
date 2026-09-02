@@ -223,7 +223,7 @@
 
         .money-input input {
             width: 100%;
-            height: 40px;
+            height: 30px;
 
             padding: 0 8px 0 29px;
 
@@ -304,7 +304,7 @@
         .day-table td:first-child {
             text-align: left;
 
-            padding-left: 3px;
+            padding-left: 2px;
 
             font-size: 13px;
             font-weight: 600;
@@ -324,7 +324,7 @@
 
             grid-template-columns:
                 minmax(22px, 1fr)
-                22px
+                30px
                 minmax(22px, 1fr);
 
             align-items: center;
@@ -411,7 +411,7 @@
         .additional-row {
             display: grid;
 
-            grid-template-columns: 1fr 88px 58px;
+            grid-template-columns: 1fr 88px 70px;
 
             align-items: center;
 
@@ -444,7 +444,7 @@
         .count-input span {
             position: absolute;
 
-            left: 8px;
+            left: 6px;
             top: 50%;
 
             transform: translateY(-50%);
@@ -459,7 +459,7 @@
         .additional-input input,
         .count-input input {
             width: 100%;
-            height: 34px;
+            height: 25px;
 
             border: 1px solid #d4d4d4;
             border-radius: 8px;
@@ -481,7 +481,7 @@
 
 
         .count-input input {
-            padding: 0 5px 0 21px;
+            padding: 0 5px 0 33px;
 
             text-align: center;
         }
@@ -783,7 +783,6 @@
                         id="photographerRate"
                         type="text"
                         inputmode="numeric"
-                        value="10,000"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -810,7 +809,6 @@
                         id="videographerRate"
                         type="text"
                         inputmode="numeric"
-                        value="10,000"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -837,7 +835,6 @@
                         id="droneRate"
                         type="text"
                         inputmode="numeric"
-                        value="5,000"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -864,7 +861,6 @@
                         id="ledRate"
                         type="text"
                         inputmode="numeric"
-                        value="15,000"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -897,19 +893,19 @@
                     </th>
 
                     <th>
-                        📷 Photo
+                        📷 Photographers
                     </th>
 
                     <th>
-                        🎥 Video
+                        🎥 Videographers
                     </th>
 
                     <th>
-                        🚁 Drone
+                        🚁 Drones
                     </th>
 
                     <th>
-                        LED
+                        LED Walls
                     </th>
 
                 </tr>
@@ -953,7 +949,6 @@
                         id="reelsRate"
                         type="text"
                         inputmode="numeric"
-                        value="0"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -969,8 +964,6 @@
                     <input
                         id="reelsCount"
                         type="number"
-                        min="0"
-                        value="0"
                         oninput="calculateTotal()"
                     >
 
@@ -995,7 +988,6 @@
                         id="dvdRate"
                         type="text"
                         inputmode="numeric"
-                        value="0"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -1011,8 +1003,6 @@
                     <input
                         id="dvdCount"
                         type="number"
-                        min="0"
-                        value="0"
                         oninput="calculateTotal()"
                     >
 
@@ -1037,7 +1027,6 @@
                         id="albumRate"
                         type="text"
                         inputmode="numeric"
-                        value="0"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -1053,8 +1042,6 @@
                     <input
                         id="albumCount"
                         type="number"
-                        min="0"
-                        value="0"
                         oninput="calculateTotal()"
                     >
 
@@ -1079,7 +1066,6 @@
                         id="other"
                         type="text"
                         inputmode="numeric"
-                        value="0"
                         oninput="
                             formatRate(this);
                             calculateTotal();
@@ -1194,7 +1180,7 @@
                     </span>
 
                     <span id="breakdownTotal">
-                        ₹20,000
+                        ₹0
                     </span>
 
                 </div>
@@ -1567,17 +1553,11 @@
         change
     ) {
 
-
         const prefixes = {
-
             photographer: "photo",
-
             video: "video",
-
             drone: "drone",
-
             led: "led"
-
         };
 
 
@@ -1595,21 +1575,15 @@
 
 
         if (value < 0) {
-
             value = 0;
-
         }
 
 
         if (value > 9) {
-
             value = 9;
-
         }
 
-
         element.textContent = value;
-
 
         calculateTotal();
 
@@ -1621,7 +1595,6 @@
     ================================= */
 
     function calculateTotal() {
-
 
         const photographerRate =
             readMoneyInput(
@@ -1838,17 +1811,17 @@
 
         document.getElementById(
             "photographerRate"
-        ).value = "10,000";
+        ).value = "8,000";
 
 
         document.getElementById(
             "videographerRate"
-        ).value = "10,000";
+        ).value = "12,000";
 
 
         document.getElementById(
             "droneRate"
-        ).value = "5,000";
+        ).value = "20,000";
 
 
         document.getElementById(
@@ -1858,7 +1831,7 @@
 
         document.getElementById(
             "reelsRate"
-        ).value = "0";
+        ).value = "1,000";
 
         document.getElementById(
             "reelsCount"
@@ -1867,7 +1840,7 @@
 
         document.getElementById(
             "dvdRate"
-        ).value = "0";
+        ).value = "2,000";
 
         document.getElementById(
             "dvdCount"
@@ -1876,7 +1849,7 @@
 
         document.getElementById(
             "albumRate"
-        ).value = "0";
+        ).value = "100";
 
         document.getElementById(
             "albumCount"
@@ -1899,9 +1872,10 @@
        INITIALIZE
     ================================= */
 
-    generateDays();
+    resetCalculator();
+    // generateDays();
 
-    calculateTotal();
+    // calculateTotal();
 
 
 </script>
