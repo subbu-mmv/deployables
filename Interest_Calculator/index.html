@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI & Loan Savings Calculator</title>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #16a34a;
+            --danger-color: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 1rem 0.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.4rem;
+        }
+
+        /* Responsive 2-Column Form Layout (Preserved on Mobile) */
+        .form-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+        }
+
+        .form-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .col-header {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.1rem;
+            white-space: nowrap;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        input, select {
+            padding: 0.45rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Hero block for EMI */
+        .emi-hero-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 0.85rem;
+            text-align: center;
+            margin-bottom: 0.85rem;
+        }
+
+        .emi-hero-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .emi-hero-value {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-top: 0.15rem;
+        }
+
+        /* Breakdown items */
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+        }
+
+        .result-item.sub-item {
+            padding-left: 0.6rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .result-item.total-row {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.5rem;
+            margin-top: 0.2rem;
+            font-weight: 700;
+        }
+
+        .result-value {
+            font-weight: 600;
+        }
+
+        /* Savings Box */
+        .highlight-box {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .highlight-box.negative {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        /* Responsive Chart Container */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem 0.35rem;
+            }
+            .card {
+                padding: 0.85rem;
+            }
+            .top-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            /* Explicitly maintain 2 columns inside form on mobile */
+            .form-layout {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .col-header {
+                font-size: 0.68rem;
+            }
+            label {
+                font-size: 0.72rem;
+            }
+            input, select {
+                padding: 0.4rem 0.35rem;
+                font-size: 0.8rem;
+            }
+            .chart-container {
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <div class="top-grid">
+        <!-- Section 1: Inputs -->
+        <div class="card">
+            <h2>Loan & Purchase Details</h2>
+            <form id="calculator-form" class="form-layout">
+                <!-- Left Column: Primary/Main Inputs -->
+                <div class="form-column">
+                    <div class="col-header">Primary Details</div>
+
+                    <div class="form-group">
+                        <label for="displayedPrice">Displayed Price (₹)</label>
+                        <input type="number" id="displayedPrice" value="79999" step="any" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" id="itemName" placeholder="Smartphone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payer">Payer Name</label>
+                        <input type="text" id="payer" placeholder="Self">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tenure">Tenure (Months)</label>
+                        <input type="number" id="tenure" value="12" min="0" max="60" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interestRate">Interest Rate (% p.a.)</label>
+                        <input type="number" id="interestRate" value="17" step="0.01" required>
+                    </div>
+                </div>
+
+                <!-- Right Column: Advanced Inputs -->
+                <div class="form-column">
+                    <div class="col-header">Advanced / Extra</div>
+
+                    <div class="form-group">
+                        <label for="principal">Principal Amount (₹)</label>
+                        <input type="number" id="principal" value="79999" step="any" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loanType">Loan Type</label>
+                        <select id="loanType">
+                            <option value="EMI">EMI (PMT)</option>
+                            <option value="Y">Flat (Y)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gstRate">GST (%) on Interest</label>
+                        <input type="number" id="gstRate" value="18" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="processingFee">Processing Fee (₹)</label>
+                        <input type="number" id="processingFee" value="299" step="any">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalCharges">Extra Charges (₹)</label>
+                        <input type="number" id="additionalCharges" value="0" step="any">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Section 2: Calculation Breakdown -->
+        <div class="card">
+            <h2>Calculation Breakdown</h2>
+            
+            <div class="emi-hero-card">
+                <div class="emi-hero-title">Monthly EMI Payment</div>
+                <div class="emi-hero-value" id="resEmi">₹0.00</div>
+            </div>
+
+            <div class="results-list">
+                <div class="result-item sub-item">
+                    <span>Base Principal Repaid</span>
+                    <span class="result-value" id="resPrincipal">₹0.00</span>
+                </div>
+                
+                <div class="result-item sub-item">
+                    <span>Total Interest Charges</span>
+                    <span class="result-value" id="resInterest">₹0.00</span>
+                </div>
+
+                <div class="result-item sub-item">
+                    <span>GST on Interest</span>
+                    <span class="result-value" id="resTaxInterest">₹0.00</span>
+                </div>
+
+                <div class="result-item sub-item">
+                    <span>Processing Fee + GST</span>
+                    <span class="result-value" id="resProcFee">₹0.00</span>
+                </div>
+
+                <div class="result-item sub-item">
+                    <span>Additional Charges</span>
+                    <span class="result-value" id="resAddCharges">₹0.00</span>
+                </div>
+
+                <div class="result-item total-row">
+                    <span>Total Outflow (Actual Cost)</span>
+                    <span class="result-value" id="resTotalOutflow" style="color: var(--text-main);">₹0.00</span>
+                </div>
+            </div>
+
+            <div class="highlight-box" id="savingsContainer">
+                <div>
+                    <div style="font-weight: 700; font-size: 0.9rem;">Overall Savings</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">(Displayed - Outflow)</div>
+                </div>
+                <div class="result-value" id="resSavings" style="font-size: 1.25rem;">₹0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Curve (Tenure vs Savings) -->
+    <div class="card">
+        <h2>Tenure vs. Overall Savings</h2>
+        <div class="chart-container">
+            <canvas id="savingsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isPrincipalUserEdited = false;
+    let savingsChartInstance = null;
+
+    const displayedPriceInput = document.getElementById('displayedPrice');
+    const principalInput = document.getElementById('principal');
+
+    displayedPriceInput.addEventListener('input', () => {
+        if (!isPrincipalUserEdited) {
+            principalInput.value = displayedPriceInput.value;
+        }
+        calculateAndRender();
+    });
+
+    principalInput.addEventListener('input', () => {
+        // if (principalInput.value === "" || principalInput.value === displayedPriceInput.value) {
+        //     isPrincipalUserEdited = false;
+        // } else {
+        //     isPrincipalUserEdited = true;
+        // }
+        calculateAndRender();
+    });
+
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            maximumFractionDigits: 2
+        }).format(amount);
+    }
+
+    function calculatePMT(ratePerPeriod, numberOfPeriods, presentValue) {
+        if (ratePerPeriod === 0) return presentValue / numberOfPeriods;
+        const pvif = Math.pow(1 + ratePerPeriod, numberOfPeriods);
+        return (ratePerPeriod * presentValue * pvif) / (pvif - 1);
+    }
+
+    function getLoanStats(tenureMonths) {
+        const displayedPrice = parseFloat(displayedPriceInput.value) || 0;
+        const principal = parseFloat(principalInput.value) || 0;
+        const interestRatePAnnum = (parseFloat(document.getElementById('interestRate').value) || 0) / 100;
+        const loanType = document.getElementById('loanType').value;
+        const gstRate = (parseFloat(document.getElementById('gstRate').value) || 0) / 100;
+        const processingFee = parseFloat(document.getElementById('processingFee').value) || 0;
+        const additionalCharges = parseFloat(document.getElementById('additionalCharges').value) || 0;
+
+        if (tenureMonths === 0) {
+            return {
+                emi: 0,
+                isZeroTenure: true,
+                principal: displayedPrice,
+                totalInterest: 0,
+                taxOnInterest: 0,
+                totalProcessingCost: 0,
+                additionalCharges: 0,
+                totalOutflow: displayedPrice,
+                savings: 0
+            };
+        }
+
+        if (principal <= 0) {
+            return { emi: 0, isZeroTenure: false, principal: 0, totalInterest: 0, taxOnInterest: 0, totalProcessingCost: 0, additionalCharges: 0, totalOutflow: 0, savings: 0 };
+        }
+
+        let emi = 0;
+        let totalInterest = 0;
+        const monthlyRate = interestRatePAnnum / 12;
+
+        if (loanType === "Y") {
+            totalInterest = principal * tenureMonths * monthlyRate;
+            emi = (principal + totalInterest) / tenureMonths;
+        } else {
+            emi = calculatePMT(monthlyRate, tenureMonths, principal);
+            totalInterest = (emi * tenureMonths) - principal;
+        }
+
+        const taxOnInterest = totalInterest * gstRate;
+        const taxOnProcessing = processingFee * gstRate;
+        const totalProcessingCost = processingFee + taxOnProcessing;
+
+        const totalOutflow = principal + totalInterest + taxOnInterest + totalProcessingCost + additionalCharges;
+        const savings = displayedPrice - totalOutflow;
+
+        return {
+            emi,
+            isZeroTenure: false,
+            principal,
+            totalInterest,
+            taxOnInterest,
+            totalProcessingCost,
+            additionalCharges,
+            totalOutflow,
+            savings
+        };
+    }
+
+    function calculateAndRender() {
+        const tenureInput = document.getElementById('tenure');
+        const currentTenure = parseInt(tenureInput.value);
+
+        const stats = getLoanStats(isNaN(currentTenure) ? 0 : currentTenure);
+
+        document.getElementById('resEmi').innerText = stats.isZeroTenure ? "N/A (Cash Pay)" : formatCurrency(stats.emi);
+        document.getElementById('resPrincipal').innerText = formatCurrency(stats.principal);
+        document.getElementById('resInterest').innerText = formatCurrency(stats.totalInterest);
+        document.getElementById('resTaxInterest').innerText = formatCurrency(stats.taxOnInterest);
+        document.getElementById('resProcFee').innerText = formatCurrency(stats.totalProcessingCost);
+        document.getElementById('resAddCharges').innerText = formatCurrency(stats.additionalCharges);
+        document.getElementById('resTotalOutflow').innerText = formatCurrency(stats.totalOutflow);
+
+        const savingsContainer = document.getElementById('savingsContainer');
+        const savingsValElement = document.getElementById('resSavings');
+        
+        savingsValElement.innerText = formatCurrency(stats.savings);
+        
+        if (stats.savings >= 0) {
+            savingsContainer.className = "highlight-box";
+            savingsValElement.style.color = "var(--success-color)";
+        } else {
+            savingsContainer.className = "highlight-box negative";
+            savingsValElement.style.color = "var(--danger-color)";
+        }
+
+        updateChart(isNaN(currentTenure) ? 0 : currentTenure);
+    }
+
+    function updateChart(activeTenure) {
+        const tenures = [0, 3, 6, 9, 12, 15, 18, 21, 24];
+        const statsData = tenures.map(t => getLoanStats(t));
+        const savingsData = statsData.map(s => s.savings);
+
+        const pointBackgroundColors = tenures.map(t => t === activeTenure ? '#2563eb' : 'rgba(37, 99, 235, 0.2)');
+        const pointRadius = tenures.map(t => t === activeTenure ? 7 : 3);
+
+        if (savingsChartInstance) {
+            savingsChartInstance.data.labels = tenures;
+            savingsChartInstance.data.datasets[0].data = savingsData;
+            savingsChartInstance.data.datasets[0].stats = statsData;
+            savingsChartInstance.data.datasets[0].pointBackgroundColor = pointBackgroundColors;
+            savingsChartInstance.data.datasets[0].pointRadius = pointRadius;
+            savingsChartInstance.update();
+        } else {
+            const ctx = document.getElementById('savingsChart').getContext('2d');
+            savingsChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: tenures,
+                    datasets: [{
+                        label: 'Overall Savings (₹)',
+                        data: savingsData,
+                        stats: statsData,
+                        borderColor: '#2563eb',
+                        borderWidth: 2,
+                        fill: true,
+                        backgroundColor: 'rgba(37, 99, 235, 0.05)',
+                        tension: 0.25,
+                        pointBackgroundColor: pointBackgroundColors,
+                        pointRadius: pointRadius
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return `Tenure: ${context[0].label} Months`;
+                                },
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    const stat = context.dataset.stats[index];
+                                    const emiText = stat.isZeroTenure ? "N/A" : formatCurrency(stat.emi);
+                                    
+                                    return [
+                                        ` Total Outflow: ${formatCurrency(stat.totalOutflow)}`,
+                                        ` Overall Savings: ${formatCurrency(stat.savings)}`,
+                                        ` Monthly EMI: ${emiText}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tenure (Months)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Overall Savings (₹)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('#calculator-form input, #calculator-form select').forEach(element => {
+        if (element.id !== 'displayedPrice' && element.id !== 'principal') {
+            element.addEventListener('input', calculateAndRender);
+        }
+    });
+
+    calculateAndRender();
+</script>
+
+</body>
+</html>
