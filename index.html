@@ -1,25 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Subba's Scripts</title>
-  </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployables Hub</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
 
-  <body>
-    <h3>🧪 Webpage for my Deployable scripts (Python/JS).</h3>
-    <h4>Under progress. More will be updated soon.</h4>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 2rem 1rem; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 900px; }
+        
+        header { margin-bottom: 2rem; text-align: center; }
+        header h1 { font-size: 1.8rem; font-weight: 800; color: var(--text); }
+        header p { color: var(--muted); font-size: 0.95rem; margin-top: 0.4rem; }
 
-    <ol>
-      <li><a href="01-JSNMR/jsnmr_empty_page.html">Simpson viewer (JSNMR) - Without Y-axi</a></li>
-      <li><a href="01-JSNMR/jsnmr_empty_page_yaxis.html">Simpson viewer (JSNMR) - Y-axis Shown</a></li>
+        /* Tab Navigation */
+        .tabs { display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
+        .tab-btn { padding: 0.6rem 1.2rem; background: none; border: none; font-size: 0.9rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-      <li>Add links for power levels converter, chemical shift calibration (BFO1, SFO1, SR, ...)</li>
-      <li><a href="CSV_reader_code/index.html">CSV Reader</a> (from Code as string)</li>
-      <!-- <li><a href="CSV_reader_file/index.html">CSV Reader</a> (from script.py file)</li> -->
-      <li><a href="CSV_reader_script/index.html">CSV Reader</a> (from script.py file)</li>
+        /* Grid & Cards */
+        .tab-content { display: none; }
+        .tab-content.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
 
-      <li><a href="">Add JSNMR Pages (and mention, code is not mine)</a></li>
-    </ol>
-    
-  </body>
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; justify-content: space-between; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: var(--primary); }
+        .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--text); }
+        .card p { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+        .card .badge { display: inline-block; margin-top: 1rem; font-size: 0.7rem; font-weight: 700; color: var(--primary); text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Deployables Hub</h1>
+        <p>A collection of lightweight, client-side web tools and utilities.</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('calculators')">Calculators</button>
+        <button class="tab-btn" onclick="switchTab('nmr')">NMR Work</button>
+        <button class="tab-btn" onclick="switchTab('personal')">Personal Tools</button>
+    </div>
+
+    <!-- Calculators Tab -->
+    <div id="calculators" class="tab-content active">
+        <a href="./Interest_Calculator/" class="card">
+            <div>
+                <h3>EMI & Interest Calculator</h3>
+                <p>Interactive loan comparison tool with total cost breakdown and dynamic tenure charts.</p>
+            </div>
+            <span class="badge">Launch Tool &rarr;</span>
+        </a>
+    </div>
+
+    <!-- NMR Work Tab -->
+    <div id="nmr" class="tab-content">
+        <div class="card">
+            <div>
+                <h3>NMR Processing Tools</h3>
+                <p>Scripts and utilities for NMR data analysis and spectral operations.</p>
+            </div>
+            <span class="badge">Coming Soon</span>
+        </div>
+    </div>
+
+    <!-- Personal Tools Tab -->
+    <div id="personal" class="tab-content">
+        <div class="card">
+            <div>
+                <h3>Custom Utilities</h3>
+                <p>General workflow automation, quick links, and experimental web apps.</p>
+            </div>
+            <span class="badge">Coming Soon</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        event.currentTarget.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+</script>
+</body>
 </html>
