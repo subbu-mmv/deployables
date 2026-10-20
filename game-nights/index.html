@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tambola Ledger</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+          colors: {
+            amberBrand: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+            dark: { 950: '#0b0f19', 900: '#111827', 850: '#172033', 800: '#1f293d', 700: '#334155' }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1.25rem); }
+  </style>
+</head>
+<body class="bg-dark-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-amber-500 selection:text-white pb-24 md:pb-10">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-dark-900/90 backdrop-blur-md border-b border-dark-700/60 px-4 py-3 sm:px-6">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-dark-950 font-black text-xl">
+          🎟️
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold text-white flex items-center gap-2">
+            <span>Tambola Ledger</span>
+            <span id="headerRoundBadge" class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[11px] font-mono px-2 py-0.5 rounded-full">Round 1</span>
+          </h1>
+          <p id="headerSummaryText" class="text-xs text-slate-400">0 players • 0 rounds logged</p>
+        </div>
+      </div>
+      <button onclick="openShareModal()" class="px-3 py-1.5 text-xs font-semibold bg-dark-800 hover:bg-dark-700 text-slate-200 border border-dark-700 rounded-lg transition">
+        Backup / Data
+      </button>
+    </div>
+  </header>
+
+  <!-- DESKTOP NAV -->
+  <nav class="max-w-4xl mx-auto w-full px-4 pt-4 hidden md:block">
+    <div class="grid grid-cols-4 p-1 bg-dark-900 rounded-xl border border-dark-700/80 text-sm font-semibold">
+      <button onclick="switchTab('round')" id="desktopTabBtn-round" class="tab-button active py-2.5 rounded-lg bg-amber-500 text-dark-950 font-bold shadow">
+        🎲 Play Round
+      </button>
+      <button onclick="switchTab('players')" id="desktopTabBtn-players" class="tab-button py-2.5 rounded-lg text-slate-400 hover:text-white">
+        👥 People (<span id="desktopPlayerCount">0</span>)
+      </button>
+      <button onclick="switchTab('history')" id="desktopTabBtn-history" class="tab-button py-2.5 rounded-lg text-slate-400 hover:text-white">
+        📜 Round History
+      </button>
+      <button onclick="switchTab('settlements')" id="desktopTabBtn-settlements" class="tab-button py-2.5 rounded-lg text-slate-400 hover:text-white">
+        🤝 Settlements
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-4xl mx-auto w-full px-4 py-4 sm:py-6 flex-1">
+
+    <!-- TAB 1: PLAY ROUND -->
+    <section id="tab-round" class="tab-content space-y-6">
+
+      <!-- Setup & Pricing -->
+      <div class="bg-dark-900 rounded-2xl border border-dark-700/80 shadow-xl overflow-hidden">
+        <div class="p-4 sm:p-5 bg-gradient-to-r from-dark-850 to-dark-900 border-b border-dark-800 flex items-center justify-between">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">⚙️ Round Setup & Price Fixing</h2>
+            <p class="text-xs text-slate-400">Configure ticket pricing, player tickets, and prize splits</p>
+          </div>
+          <div class="text-right">
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Round Pool</div>
+            <div id="quickPoolDisplay" class="font-mono text-xl sm:text-2xl font-black text-amber-400">₹0</div>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-6 space-y-5">
+          <!-- Step Multiplier & Ticket Price -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-3.5 bg-dark-950 rounded-xl border border-dark-800 space-y-1.5">
+              <label class="block text-xs font-semibold uppercase text-slate-300">1. Increment Step (₹)</label>
+              <div class="flex items-center space-x-2">
+                <button type="button" onclick="adjustIncrement(-1)" class="w-9 h-9 rounded-lg bg-dark-800 hover:bg-dark-700 text-slate-200 font-bold text-base border border-dark-700">−</button>
+                <input type="number" id="incrementInput" min="1" value="5" onchange="handleIncrementChange(this.value)" class="flex-1 bg-dark-900 border border-dark-700 rounded-lg py-1.5 text-center font-mono font-bold text-sm text-white focus:outline-none focus:border-amber-400">
+                <button type="button" onclick="adjustIncrement(1)" class="w-9 h-9 rounded-lg bg-dark-800 hover:bg-dark-700 text-slate-200 font-bold text-base border border-dark-700">+</button>
+              </div>
+            </div>
+
+            <div class="p-3.5 bg-dark-950 rounded-xl border border-dark-800 space-y-1.5">
+              <label class="block text-xs font-semibold uppercase text-slate-300">2. Ticket Price (₹)</label>
+              <div class="flex items-center space-x-2">
+                <button type="button" onclick="adjustTicketPrice(-1)" class="w-9 h-9 rounded-lg bg-dark-800 hover:bg-dark-700 text-amber-400 font-bold text-base border border-dark-700">−</button>
+                <input type="number" id="ticketPriceInput" min="1" value="20" onchange="handleTicketPriceChange(this.value)" class="flex-1 bg-dark-900 border border-dark-700 rounded-lg py-1.5 text-center font-mono font-bold text-sm text-amber-400 focus:outline-none focus:border-amber-400">
+                <button type="button" onclick="adjustTicketPrice(1)" class="w-9 h-9 rounded-lg bg-dark-800 hover:bg-dark-700 text-amber-400 font-bold text-base border border-dark-700">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tickets bought per person -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">3. Tickets per Player (0 = Not Playing)</h3>
+              <div class="space-x-3 text-xs">
+                <button onclick="setAllTickets(1)" class="text-amber-400 hover:underline">All 1</button>
+                <button onclick="setAllTickets(0)" class="text-slate-400 hover:underline">All 0</button>
+              </div>
+            </div>
+            <div id="playerTicketsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 max-h-60 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- Total Pool Banner -->
+          <div class="p-3.5 bg-dark-850 rounded-xl border border-dark-700/80 flex items-center justify-between">
+            <div class="text-xs text-slate-300 font-medium">
+              <span id="bannerTotalTickets">0</span> active tickets @ <span id="bannerTicketPrice">₹20</span>
+            </div>
+            <div class="font-mono text-xl font-black text-amber-400" id="bannerPoolAmount">₹0</div>
+          </div>
+
+          <!-- Prize Splits Allocation -->
+          <div class="space-y-3 pt-2 border-t border-dark-800">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">4. Prize Split</h3>
+              <div id="prizeBalanceBadge" class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border">
+                <span id="balanceIndicatorDot" class="w-2 h-2 rounded-full"></span>
+                <span id="balanceText">Checking...</span>
+              </div>
+            </div>
+
+            <div id="categoriesContainer" class="space-y-2"></div>
+
+            <div class="text-right">
+              <button onclick="recalculateAmountsFromPercentages()" class="text-xs text-amber-400 hover:underline font-semibold">
+                Auto-Snap Amounts to Percentages & Increment
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claim Winners Accordion Section -->
+      <div class="bg-dark-900 rounded-2xl border border-dark-700/80 shadow-xl overflow-hidden">
+        <div class="p-4 sm:p-5 bg-gradient-to-r from-dark-850 to-dark-900 border-b border-dark-800 flex items-center justify-between">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">🏆 Claim Winners</h2>
+            <p class="text-xs text-slate-400">Only showing active ticket holders for this round. ₹0 categories are omitted.</p>
+          </div>
+          <span class="text-xs bg-dark-800 text-amber-400 px-2.5 py-1 rounded-full border border-dark-700 font-mono font-semibold" id="activeHoldersBadge">
+            0 playing
+          </span>
+        </div>
+
+        <div class="p-4 sm:p-6 space-y-4">
+          <div id="winCategoryAccordions" class="space-y-3"></div>
+
+          <div class="pt-4 border-t border-dark-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="text-xs text-slate-400 text-center sm:text-left">
+              Finished claiming? Finalize to update the ledger.
+            </div>
+            <button id="finishRoundBtn" onclick="handleFinishRound()" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-dark-950 font-extrabold text-sm rounded-xl shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center space-x-2">
+              <span>🎉</span>
+              <span id="finishRoundBtnLabel">Finish & Save Round</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 2: PEOPLE LIST -->
+    <section id="tab-players" class="tab-content hidden space-y-5">
+      <div class="bg-dark-900 rounded-2xl border border-dark-700/80 p-5 shadow-xl space-y-4">
+        <div class="flex items-center justify-between border-b border-dark-800 pb-3">
+          <h2 class="text-base font-bold text-white">👥 Master People List</h2>
+          <span id="totalPlayersBadge" class="text-xs text-amber-400 font-mono font-bold">0 People</span>
+        </div>
+
+        <form onsubmit="handleNewPlayerSubmit(event)" class="flex gap-2">
+          <input type="text" id="newPlayerNameInput" placeholder="Enter player name (e.g. Ramesh)" maxlength="24" class="flex-1 bg-dark-950 border border-dark-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-amber-400">
+          <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-sm rounded-xl">
+            + Add
+          </button>
+        </form>
+
+        <div id="peopleListContainer" class="space-y-2 pt-1 max-h-96 overflow-y-auto"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ROUND HISTORY -->
+    <section id="tab-history" class="tab-content hidden space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            <span>📜</span> Recorded Rounds
+          </h2>
+          <p class="text-xs text-slate-400">Select rounds to remove or clear history</p>
+        </div>
+
+        <!-- History Actions Toolbar -->
+        <div class="flex items-center space-x-2">
+          <button id="deleteSelectedHistoryBtn" onclick="deleteSelectedRounds()" disabled class="px-3 py-1.5 bg-rose-600/20 text-rose-300 border border-rose-500/30 hover:bg-rose-600/30 disabled:opacity-40 disabled:pointer-events-none rounded-lg text-xs font-semibold transition">
+            Delete Selected (<span id="selectedRoundsCount">0</span>)
+          </button>
+          <button onclick="promptClearAllHistory()" class="px-3 py-1.5 bg-dark-800 hover:bg-dark-700 text-slate-300 border border-dark-700 rounded-lg text-xs font-semibold transition">
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <div id="roundsHistoryContainer" class="space-y-3"></div>
+
+      <div id="emptyHistoryState" class="hidden bg-dark-900 p-8 rounded-2xl border border-dark-800 text-center text-slate-400 space-y-1.5">
+        <div class="text-2xl">🎟️</div>
+        <div class="font-bold text-slate-200 text-sm">No rounds in history</div>
+        <p class="text-xs text-slate-500">Finish a round to see detailed breakdown and standings here.</p>
+      </div>
+    </section>
+
+    <!-- TAB 4: SETTLEMENTS -->
+    <section id="tab-settlements" class="tab-content hidden space-y-5">
+      <div class="bg-gradient-to-r from-dark-900 to-dark-850 p-4 sm:p-5 rounded-2xl border border-dark-700/80 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span class="inline-block px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30 mb-1">
+            Settlement Summary
+          </span>
+          <h2 class="text-base sm:text-lg font-bold text-white">Who Pays Whom</h2>
+          <p class="text-xs text-slate-400">Calculates cumulative tickets vs winnings with minimal cash transfers.</p>
+        </div>
+        <button onclick="copySettlementSummaryToWhatsApp()" class="w-full sm:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md transition flex items-center justify-center space-x-1.5">
+          <span>📋</span>
+          <span>Copy WhatsApp Summary</span>
+        </button>
+      </div>
+
+      <!-- Optimized Direct Transfers -->
+      <div>
+        <div class="text-xs uppercase font-bold text-slate-400 mb-2">Direct Payments (<span id="settlementTransfersCount">0</span>)</div>
+        <div id="settlementTransfersContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+        <div id="noSettlementsBox" class="hidden bg-dark-900 p-6 rounded-2xl border border-dark-800 text-center text-slate-400">
+          <p class="font-bold text-slate-200 text-sm">All square!</p>
+          <p class="text-xs text-slate-500">No outstanding payments across recorded rounds.</p>
+        </div>
+      </div>
+
+      <!-- Cumulative Ledger -->
+      <div class="bg-dark-900 rounded-2xl border border-dark-700/80 p-4 space-y-3">
+        <h3 class="text-xs uppercase font-bold text-slate-400">Cumulative Balances (+ Won / − Lost)</h3>
+        <div id="cumulativePlayerBalancesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-dark-900/95 backdrop-blur-lg border-t border-dark-800 px-2 py-1.5 flex justify-around text-xs font-semibold pb-safe">
+    <button onclick="switchTab('round')" id="mobileTabBtn-round" class="flex flex-col items-center py-1 px-3 text-amber-400 font-bold">
+      <span class="text-base">🎲</span><span class="text-[10px] mt-0.5">Round</span>
+    </button>
+    <button onclick="switchTab('players')" id="mobileTabBtn-players" class="flex flex-col items-center py-1 px-3 text-slate-400">
+      <span class="text-base">👥</span><span class="text-[10px] mt-0.5">People</span>
+    </button>
+    <button onclick="switchTab('history')" id="mobileTabBtn-history" class="flex flex-col items-center py-1 px-3 text-slate-400">
+      <span class="text-base">📜</span><span class="text-[10px] mt-0.5">History</span>
+    </button>
+    <button onclick="switchTab('settlements')" id="mobileTabBtn-settlements" class="flex flex-col items-center py-1 px-3 text-slate-400">
+      <span class="text-base">🤝</span><span class="text-[10px] mt-0.5">Settle</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: ROUND FINISHED -->
+  <div id="roundFinishedModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-dark-900 border border-amber-500/40 rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-4 bg-dark-850 border-b border-dark-800 text-center">
+        <span class="text-2xl">🎉</span>
+        <h3 id="finishModalRoundTitle" class="text-lg font-black text-white mt-0.5">Round Saved</h3>
+        <p class="text-xs text-amber-300 font-medium">Sorted by highest sum won, then alphabetically</p>
+      </div>
+
+      <div class="p-4 overflow-y-auto space-y-3 flex-1">
+        <div class="bg-dark-950 rounded-xl border border-dark-800 overflow-hidden">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-dark-850 text-slate-400 uppercase text-[10px] font-bold border-b border-dark-800">
+              <tr>
+                <th class="py-2.5 px-3">Player</th>
+                <th class="py-2.5 px-2">Won Categories</th>
+                <th class="py-2.5 px-3 text-right">Sum Won</th>
+              </tr>
+            </thead>
+            <tbody id="roundFinishedTableBody" class="divide-y divide-dark-800 text-slate-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="p-3 bg-dark-950 border-t border-dark-800 flex items-center justify-between gap-2">
+        <button onclick="closeFinishedModal()" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-lg bg-dark-800 hover:bg-dark-700 transition">
+          Dismiss & Keep Editing
+        </button>
+        <button onclick="startNextRound()" class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs rounded-xl transition">
+          Proceed to Next Round ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DATA SYNC -->
+  <div id="shareModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-dark-900 border border-dark-700/80 rounded-2xl w-full max-w-md p-4 shadow-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-dark-800 pb-2">
+        <h3 class="font-bold text-white text-sm">Tambola Session Data</h3>
+        <button onclick="closeShareModal()" class="text-slate-400">✕</button>
+      </div>
+      <textarea id="jsonShareArea" rows="4" class="w-full bg-dark-950 border border-dark-700 rounded-xl p-2.5 text-xs font-mono text-slate-300 focus:outline-none"></textarea>
+      <div class="flex gap-2">
+        <button onclick="exportDataJson()" class="flex-1 py-1.5 bg-dark-800 hover:bg-dark-700 text-amber-400 text-xs font-semibold rounded-lg border border-dark-700">Copy JSON</button>
+        <button onclick="importDataJson()" class="flex-1 py-1.5 bg-amber-500 hover:bg-amber-400 text-dark-950 text-xs font-bold rounded-lg">Restore</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toastNotification" class="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-dark-800 border border-amber-500/40 text-white text-xs px-4 py-2 rounded-full shadow-2xl flex items-center space-x-2 transition-all duration-300 opacity-0 pointer-events-none transform translate-y-3">
+    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+    <span id="toastMessage">Success</span>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
