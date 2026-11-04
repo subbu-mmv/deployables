@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A personal, searchable reference for terminal and command-line shortcuts.">
+<title>Terminal Shortcuts</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --page: Canvas;
+    --text: CanvasText;
+    --muted: color-mix(in srgb, CanvasText 62%, transparent);
+    --line: color-mix(in srgb, CanvasText 18%, transparent);
+    --surface: color-mix(in srgb, Canvas 95%, CanvasText 5%);
+    --surface-hover: color-mix(in srgb, Canvas 90%, CanvasText 10%);
+    --accent: #3978c6;
+    --focus: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 30px;
+    background: var(--page);
+    color: var(--text);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  main { max-width: 1500px; margin: 0 auto; }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    letter-spacing: -0.035em;
+  }
+
+  .intro {
+    margin: 5px 0 24px;
+    color: var(--muted);
+  }
+
+  .overview {
+    padding: 17px 20px;
+    margin-bottom: 22px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  .overview h2 {
+    margin: 0 0 9px;
+    font-size: 1.05rem;
+  }
+
+  .overview ul { margin: 0; padding-left: 21px; }
+  .overview li + li { margin-top: 6px; }
+
+  .table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .result-count {
+    color: var(--muted);
+    font-size: .9rem;
+  }
+
+  button {
+    padding: 8px 13px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  button:hover { background: var(--surface-hover); }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  .table-wrap {
+    overflow: auto;
+    max-height: 72vh;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+  }
+
+  table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    min-width: 190px;
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th:first-child {
+    left: 0;
+    z-index: 4;
+    min-width: 300px;
+    width: 36%;
+  }
+
+  .column-title {
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .filter-input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 8px 9px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--page);
+    color: var(--text);
+    font: inherit;
+    font-size: .88rem;
+  }
+
+  tbody td {
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:nth-child(even) td { background: var(--surface); }
+
+  tbody td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    min-width: 300px;
+    background: var(--page);
+  }
+
+  tbody tr:nth-child(even) td:first-child { background: var(--surface); }
+  tbody tr:hover td { background: var(--surface-hover); }
+  tbody tr:hover td:first-child { background: var(--surface-hover); }
+
+  .function-name { font-weight: 650; }
+  .function-description {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: .9rem;
+  }
+
+  .shortcut {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow-wrap: anywhere;
+  }
+
+  .not-applicable { color: var(--muted); }
+
+  .empty-state {
+    display: none;
+    padding: 28px 16px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  footer {
+    margin-top: 13px;
+    color: var(--muted);
+    font-size: .85rem;
+  }
+
+  @media (max-width: 650px) {
+    body { padding: 16px; }
+    .table-toolbar { align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Terminal Shortcuts</h1>
+    <p class="intro">A searchable reference for command-line editing and shell history.</p>
+  </header>
+
+  <section class="overview" aria-labelledby="overview-heading">
+    <h2 id="overview-heading">Important points</h2>
+    <ul id="overview-list"></ul>
+  </section>
+
+  <div class="table-toolbar">
+    <span class="result-count" id="result-count" aria-live="polite"></span>
+    <button id="clear-filters" type="button">Clear all search filters</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="shortcuts-table">
+      <thead id="table-head"></thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="empty-state" id="empty-state">No shortcuts match the current filters.</div>
+  </div>
+
+  <footer>
+    Tip: search the function names/descriptions in the first column, or search a particular machine's shortcuts in that machine's column.
+  </footer>
+</main>
+
+<script>
+/* =====================================================================
+   EDIT YOUR SHORTCUTS HERE — this is the single source of truth.
+
+   1. Add a machine by adding a key to MACHINES.
+   2. Add a shortcut by adding an object to SHORTCUTS.
+   3. Give each shortcut a value for each machine. Use "—" if it doesn't
+      apply, or leave that machine's value empty.
+   4. Edit the overview notes in OVERVIEW.
+
+   The table, column headings, and search boxes are generated below.
+   ===================================================================== */
+
+const MACHINES = {
+  macTerminal: "macOS — Terminal + Bash",
+  ubuntuTerminal: "Ubuntu — Terminal + Bash"
+};
+
+const OVERVIEW = [
+  "These are Bash/Readline shortcuts. Most Ctrl-key combinations are the same on macOS and Linux.",
+  "macOS Terminal: enable Option as Meta in Terminal → Settings → Profiles → Keyboard → “Use Option as Meta key”. This makes Option+B, Option+F, and Option+D behave like the Meta (Alt) combinations used by Readline.",
+  "Ubuntu: Alt usually acts as Meta in a terminal. If Alt is intercepted by the desktop environment or terminal, check the terminal's keyboard settings.",
+  "History expansions such as !! and !$ are typed into the shell and expanded when you press Enter; they are not key combinations. Review commands carefully, especially when using sudo or destructive commands.",
+  "Ctrl+C interrupts a foreground process. Ctrl+Z suspends it; use fg to resume it, or jobs to inspect suspended/background jobs."
+];
+
+const SHORTCUTS = [
+  {
+    name: "Move to beginning of line",
+    description: "Move the cursor to the start of the current command line.",
+    shortcuts: { macTerminal: "Ctrl + A", ubuntuTerminal: "Ctrl + A" }
+  },
+  {
+    name: "Move to end of line",
+    description: "Move the cursor to the end of the current command line.",
+    shortcuts: { macTerminal: "Ctrl + E", ubuntuTerminal: "Ctrl + E" }
+  },
+  {
+    name: "Move backward one word",
+    description: "Move the cursor one word to the left.",
+    shortcuts: { macTerminal: "Option + B", ubuntuTerminal: "Alt + B" }
+  },
+  {
+    name: "Move forward one word",
+    description: "Move the cursor one word to the right.",
+    shortcuts: { macTerminal: "Option + F", ubuntuTerminal: "Alt + F" }
+  },
+  {
+    name: "Delete previous word",
+    description: "Delete from the cursor back to the beginning of the previous word.",
+    shortcuts: { macTerminal: "Ctrl + W", ubuntuTerminal: "Ctrl + W" }
+  },
+  {
+    name: "Delete next word",
+    description: "Delete from the cursor to the end of the next word.",
+    shortcuts: { macTerminal: "Option + D", ubuntuTerminal: "Alt + D" }
+  },
+  {
+    name: "Delete to beginning of line",
+    description: "Cut the text between the cursor and the start of the line.",
+    shortcuts: { macTerminal: "Ctrl + U", ubuntuTerminal: "Ctrl + U" }
+  },
+  {
+    name: "Delete to end of line",
+    description: "Cut the text between the cursor and the end of the line.",
+    shortcuts: { macTerminal: "Ctrl + K", ubuntuTerminal: "Ctrl + K" }
+  },
+  {
+    name: "Paste deleted text",
+    description: "Paste the most recently cut text (for example, from Ctrl+U, Ctrl+K, or Ctrl+W).",
+    shortcuts: { macTerminal: "Ctrl + Y", ubuntuTerminal: "Ctrl + Y" }
+  },
+  {
+    name: "Search command history",
+    description: "Start reverse incremental search. Press Ctrl+R again to find an older match.",
+    shortcuts: { macTerminal: "Ctrl + R", ubuntuTerminal: "Ctrl + R" }
+  },
+  {
+    name: "Clear visible terminal",
+    description: "Clear the terminal display without deleting command history.",
+    shortcuts: { macTerminal: "Ctrl + L", ubuntuTerminal: "Ctrl + L" }
+  },
+  {
+    name: "Cancel current input / interrupt",
+    description: "Cancel the current command-line input, or send SIGINT to a running foreground process.",
+    shortcuts: { macTerminal: "Ctrl + C", ubuntuTerminal: "Ctrl + C" }
+  },
+  {
+    name: "Suspend foreground process",
+    description: "Send SIGTSTP to suspend the foreground process. Use fg to resume it.",
+    shortcuts: { macTerminal: "Ctrl + Z", ubuntuTerminal: "Ctrl + Z" }
+  },
+  {
+    name: "Signal end-of-input",
+    description: "Send EOF; often exits an interactive shell when the command line is empty.",
+    shortcuts: { macTerminal: "Ctrl + D", ubuntuTerminal: "Ctrl + D" }
+  },
+  {
+    name: "Complete command / filename",
+    description: "Complete a command, path, or filename; press again to show possible matches.",
+    shortcuts: { macTerminal: "Tab", ubuntuTerminal: "Tab" }
+  },
+  {
+    name: "Insert previous command's last argument",
+    description: "Insert the final argument from the previous command at the cursor.",
+    shortcuts: { macTerminal: "Option + .", ubuntuTerminal: "Alt + ." }
+  },
+  {
+    name: "Run previous command",
+    description: "Bash history expansion: execute the immediately preceding command.",
+    shortcuts: { macTerminal: "!!", ubuntuTerminal: "!!" }
+  },
+  {
+    name: "Insert last argument of previous command",
+    description: "Bash history expansion: substitute the last argument from the previous command.",
+    shortcuts: { macTerminal: "!$", ubuntuTerminal: "!$" }
+  },
+  {
+    name: "Insert first argument of previous command",
+    description: "Bash history expansion: substitute the first argument from the previous command.",
+    shortcuts: { macTerminal: "!^", ubuntuTerminal: "!^" }
+  },
+  {
+    name: "Insert a specific argument from previous command",
+    description: "Bash history expansion: !:n selects argument n (for example, !:2).",
+    shortcuts: { macTerminal: "!:n", ubuntuTerminal: "!:n" }
+  },
+  {
+    name: "Insert all arguments from previous command",
+    description: "Bash history expansion: !* substitutes all arguments from the previous command.",
+    shortcuts: { macTerminal: "!*", ubuntuTerminal: "!*" }
+  }
+];
+
+/* =====================================================================
+   PAGE LOGIC — normally you do not need to edit anything below here.
+   ===================================================================== */
+
+const machineEntries = Object.entries(MACHINES);
+const filters = [];
+
+function makeElement(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+function renderOverview() {
+  const list = document.getElementById("overview-list");
+  OVERVIEW.forEach(note => list.appendChild(makeElement("li", "", note)));
+}
+
+function renderTable() {
+  const head = document.getElementById("table-head");
+  const body = document.getElementById("table-body");
+  const headerRow = document.createElement("tr");
+
+  // Left-hand index: function name and description.
+  const functionHeader = document.createElement("th");
+  functionHeader.scope = "col";
+  functionHeader.appendChild(makeElement("div", "column-title", "Function / description"));
+  functionHeader.appendChild(makeSearchInput("function", "Search functions…"));
+  headerRow.appendChild(functionHeader);
+
+  // One generated column and one search box for every machine.
+  machineEntries.forEach(([machineKey, machineLabel]) => {
+    const th = document.createElement("th");
+    th.scope = "col";
+    th.appendChild(makeElement("div", "column-title", machineLabel));
+    th.appendChild(makeSearchInput(machineKey, "Search shortcuts…"));
+    headerRow.appendChild(th);
+  });
+
+  head.replaceChildren(headerRow);
+
+  SHORTCUTS.forEach(item => {
+    const row = document.createElement("tr");
+
+    const functionCell = document.createElement("td");
+    functionCell.appendChild(makeElement("div", "function-name", item.name));
+    functionCell.appendChild(makeElement("div", "function-description", item.description || ""));
+    row.appendChild(functionCell);
+
+    machineEntries.forEach(([machineKey]) => {
+      const td = document.createElement("td");
+      const shortcut = item.shortcuts?.[machineKey] || "—";
+      const span = makeElement(
+        "span",
+        shortcut === "—" ? "not-applicable" : "shortcut",
+        shortcut
+      );
+      td.appendChild(span);
+      row.appendChild(td);
+    });
+
+    body.appendChild(row);
+  });
+
+  applyFilters();
+}
+
+function makeSearchInput(columnKey, placeholder) {
+  const input = document.createElement("input");
+  input.type = "search";
+  input.className = "filter-input";
+  input.placeholder = placeholder;
+  input.setAttribute("aria-label", placeholder);
+  input.dataset.column = columnKey;
+  input.addEventListener("input", applyFilters);
+  filters.push(input);
+  return input;
+}
+
+function applyFilters() {
+  const rows = [...document.querySelectorAll("#table-body tr")];
+  const terms = filters.map(input => ({
+    column: input.dataset.column,
+    term: input.value.trim().toLocaleLowerCase()
+  }));
+
+  let visible = 0;
+
+  rows.forEach(row => {
+    const functionText = row.cells[0].innerText.toLocaleLowerCase();
+    const matches = terms.every(({ column, term }) => {
+      if (!term) return true;
+
+      if (column === "function") {
+        return functionText.includes(term);
+      }
+
+      const machineColumnIndex = machineEntries.findIndex(([key]) => key === column) + 1;
+      return row.cells[machineColumnIndex].innerText.toLocaleLowerCase().includes(term);
+    });
+
+    row.hidden = !matches;
+    if (matches) visible++;
+  });
+
+  document.getElementById("result-count").textContent =
+    `${visible} of ${rows.length} shortcuts`;
+  document.getElementById("empty-state").style.display =
+    visible === 0 ? "block" : "none";
+}
+
+function clearFilters() {
+  filters.forEach(input => { input.value = ""; });
+  applyFilters();
+  if (filters.length) filters[0].focus();
+}
+
+document.getElementById("clear-filters").addEventListener("click", clearFilters);
+
+renderOverview();
+renderTable();
+</script>
+</body>
+</html>
