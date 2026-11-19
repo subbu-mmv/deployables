@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Group Expense Splitter</title>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f4f6fa;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --green: #15803d;
+      --red: #dc2626;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: 25px;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 19px;
+      margin: 0 0 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 0 0 12px;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      transition: background 0.15s;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    button.secondary:hover {
+      background: #d1d5db;
+    }
+
+    button.danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    button.danger:hover {
+      background: #fecaca;
+    }
+
+    button.success {
+      background: var(--green);
+    }
+
+    button.small {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .tab {
+      background: transparent;
+      color: var(--muted);
+      border-radius: 8px 8px 0 0;
+      border-bottom: 3px solid transparent;
+      padding: 12px 18px;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      background: #e9edf5;
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: transparent;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.025);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 25px 10px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      background: white;
+      color: var(--text);
+      min-width: 0;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid #bfdbfe;
+      border-color: var(--primary);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .share-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 12px;
+    }
+
+    .share-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .share-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      min-width: 0;
+    }
+
+    .share-name {
+      font-size: 14px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .share-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .share-controls button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .share-controls input {
+      width: 58px;
+      text-align: center;
+      padding: 7px 3px;
+      font-size: 14px;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 600px;
+    }
+
+    th,
+    td {
+      padding: 12px 13px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f9fafb;
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td.amount,
+    th.amount {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .person-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .person-row:last-child {
+      border-bottom: none;
+    }
+
+    .person-name {
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .positive {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .negative {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .balance {
+      font-weight: 700;
+    }
+
+    .total-row {
+      background: #f9fafb;
+      font-weight: 700;
+    }
+
+    .editing-banner {
+      display: none;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .editing-banner.visible {
+      display: block;
+    }
+
+    .settlement-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .settlement-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .settlement-arrow {
+      color: var(--muted);
+      padding: 0 5px;
+    }
+
+    .settlement-amount {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .settlement-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .note {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #importFile {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .toolbar button {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .tab {
+        padding: 11px 13px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <header>
+    <h1>Group Expense Splitter</h1>
+
+    <div class="toolbar">
+      <button class="secondary" id="exportBtn">Export JSON</button>
+      <button class="secondary" id="importBtn">Import JSON</button>
+      <button class="danger" id="clearBtn">Clear Data</button>
+      <input type="file" id="importFile" accept=".json,application/json">
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="people">People</button>
+    <button class="tab" data-tab="expenses">Expenses</button>
+    <button class="tab" data-tab="settlement">Settlement</button>
+  </nav>
+
+  <!-- PEOPLE TAB -->
+  <section class="panel active" id="people">
+
+    <div class="card">
+      <h2>People</h2>
+      <p class="muted">
+        Add everyone who is part of this group. You can edit names later.
+      </p>
+
+      <form id="personForm">
+        <div class="form-grid" style="grid-template-columns: 1fr auto;">
+          <div class="field">
+            <label for="personName">Person's name</label>
+            <input
+              id="personName"
+              type="text"
+              placeholder="Enter a name"
+              maxlength="60"
+              required
+            >
+          </div>
+
+          <div class="field" style="align-self:end;">
+            <button type="submit">Add Person</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Group Members</h2>
+      <div id="peopleList"></div>
+    </div>
+
+  </section>
+
+  <!-- EXPENSES TAB -->
+  <section class="panel" id="expenses">
+
+    <div class="card">
+      <h2 id="expenseFormTitle">Add an Expense</h2>
+
+      <div id="editingBanner" class="editing-banner">
+        You are editing an existing expense. Saving will update that record,
+        not create another one.
+      </div>
+
+      <form id="expenseForm">
+
+        <div class="form-grid">
+
+          <div class="field">
+            <label for="expenseName">Expense name</label>
+            <input
+              id="expenseName"
+              type="text"
+              list="expenseNames"
+              placeholder="e.g. Dinner, Tea, Cab"
+              maxlength="100"
+              autocomplete="off"
+              required
+            >
+            <datalist id="expenseNames"></datalist>
+            <div class="muted" style="margin-top:5px;">
+              You can reuse a name. Every addition creates a separate entry.
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="expenseAmount">Amount (₹)</label>
+            <input
+              id="expenseAmount"
+              type="number"
+              min="0.01"
+              step="0.01"
+              placeholder="0.00"
+              required
+            >
+          </div>
+
+          <div class="field">
+            <label for="paidBy">Paid by</label>
+            <select id="paidBy" required></select>
+          </div>
+
+        </div>
+
+        <div class="share-heading">
+          <div>
+            <h3 style="margin-bottom:3px;">Share distribution</h3>
+            <div class="muted">
+              Enter units for each person. Actual amounts are calculated
+              proportionally.
+            </div>
+          </div>
+
+          <button type="button" class="secondary small" id="equalSplitBtn">
+            Equal Split
+          </button>
+        </div>
+
+        <div id="shareList" class="share-list"></div>
+
+        <div class="form-actions">
+          <button type="submit" id="saveExpenseBtn">Add Expense</button>
+          <button type="button" class="secondary hidden" id="cancelEditBtn">
+            Cancel Edit
+          </button>
+        </div>
+
+        <div class="note">
+          A person who paid for an expense does not automatically receive a
+          share of it. Set their share to zero if they did not participate.
+          At least one person must have a positive share.
+        </div>
+
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Recorded Expenses</h2>
+      <div id="expensesTable"></div>
+    </div>
+
+    <div class="card">
+      <h2>Contribution Breakdown</h2>
+      <p class="muted">
+        This table shows how much of each expense is allocated to each person.
+        Amounts are rounded to paise, and each row adds up exactly to the
+        original expense.
+      </p>
+      <div id="contributionTable"></div>
+    </div>
+
+  </section>
+
+  <!-- SETTLEMENT TAB -->
+  <section class="panel" id="settlement">
+
+    <div class="card">
+      <h2>Individual Summary</h2>
+      <div id="settlementSummary"></div>
+    </div>
+
+    <div class="card">
+      <h2>Who Pays Whom?</h2>
+      <p class="muted">
+        The following transfers settle the group's outstanding balances.
+      </p>
+
+      <div id="settlementList" class="settlement-list"></div>
+
+      <div class="settlement-buttons">
+        <button id="copySettlementBtn">Copy Settlement</button>
+        <button id="whatsappBtn" class="success">Share on WhatsApp</button>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // --------------------------------------------------
+  // DATA AND STORAGE
+  // --------------------------------------------------
+
+  const STORAGE_KEY = "expenseSplitterData";
+
+  let appData = {
+    version: 1,
+    people: [],
+    expenses: []
+  };
+
+  let editingExpenseId = null;
+
+  function makeId() {
+    if (crypto && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+
+    return "id_" + Date.now() + "_" +
+      Math.random().toString(36).slice(2);
+  }
+
+  function saveData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    } catch (error) {
+      alert("Could not save data to this browser's local storage.");
+      console.error(error);
+    }
+  }
+
+  function loadData() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+
+    if (!stored) return;
+
+    try {
+      const parsed = JSON.parse(stored);
+      appData = validateImportedData(parsed);
+    } catch (error) {
+      console.error("Could not load saved data:", error);
+      alert(
+        "The saved data could not be read. The app will start with empty data. " +
+        "If you have an exported JSON backup, you can import it."
+      );
+
+      appData = {
+        version: 1,
+        people: [],
+        expenses: []
+      };
+    }
+  }
+
+  // --------------------------------------------------
+  // DATA VALIDATION
+  // --------------------------------------------------
+
+  function validateImportedData(data) {
+    if (
+      !data ||
+      typeof data !== "object" ||
+      !Array.isArray(data.people) ||
+      !Array.isArray(data.expenses)
+    ) {
+      throw new Error("Invalid data structure.");
+    }
+
+    const peopleIds = new Set();
+    const people = [];
+
+    for (const person of data.people) {
+      if (
+        !person ||
+        typeof person.id !== "string" ||
+        typeof person.name !== "string" ||
+        !person.name.trim()
+      ) {
+        throw new Error("Invalid person entry.");
+      }
+
+      if (peopleIds.has(person.id)) {
+        throw new Error("Duplicate person ID.");
+      }
+
+      peopleIds.add(person.id);
+
+      people.push({
+        id: person.id,
+        name: person.name.trim()
+      });
+    }
+
+    const expenseIds = new Set();
+    const expenses = [];
+
+    for (const expense of data.expenses) {
+      if (
+        !expense ||
+        typeof expense.id !== "string" ||
+        typeof expense.name !== "string" ||
+        !expense.name.trim() ||
+        !Number.isSafeInteger(expense.amount) ||
+        expense.amount < 0 ||
+        typeof expense.paidBy !== "string" ||
+        !peopleIds.has(expense.paidBy) ||
+        !expense.shares ||
+        typeof expense.shares !== "object" ||
+        Array.isArray(expense.shares)
+      ) {
+        throw new Error("Invalid expense entry.");
+      }
+
+      if (expenseIds.has(expense.id)) {
+        throw new Error("Duplicate expense ID.");
+      }
+
+      expenseIds.add(expense.id);
+
+      const shares = {};
+
+      for (const person of people) {
+        const units = expense.shares[person.id] ?? 0;
+
+        if (!Number.isSafeInteger(units) || units < 0) {
+          throw new Error("Invalid share units.");
+        }
+
+        shares[person.id] = units;
+      }
+
+      // Reject references to people who do not exist.
+      for (const personId of Object.keys(expense.shares)) {
+        if (!peopleIds.has(personId)) {
+          throw new Error("An expense refers to a missing person.");
+        }
+      }
+
+      expenses.push({
+        id: expense.id,
+        name: expense.name.trim(),
+        amount: expense.amount,
+        paidBy: expense.paidBy,
+        shares,
+        createdAt: expense.createdAt || null
+      });
+    }
+
+    return {
+      version: 1,
+      people,
+      expenses
+    };
+  }
+
+  // --------------------------------------------------
+  // GENERAL HELPERS
+  // --------------------------------------------------
+
+  const $ = id => document.getElementById(id);
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[character]);
+  }
+
+  function formatMoney(paise) {
+    return "₹" + (paise / 100).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function rupeesToPaise(value) {
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount) || amount < 0) {
+      return null;
+    }
+
+    return Math.round((amount + Number.EPSILON) * 100);
+  }
+
+  function getPerson(personId) {
+    return appData.people.find(person => person.id === personId);
+  }
+
+  function getPersonName(personId) {
+    return getPerson(personId)?.name || "Unknown";
+  }
+
+  function totalExpenses() {
+    return appData.expenses.reduce(
+      (sum, expense) => sum + expense.amount,
+      0
+    );
+  }
+
+  function totalShareUnits(expense) {
+    return Object.values(expense.shares).reduce(
+      (sum, units) => sum + units,
+      0
+    );
+  }
+
+  // --------------------------------------------------
+  // EXACT SHARE ALLOCATION
+  // --------------------------------------------------
+
+  /*
+    Uses the largest remainder method.
+
+    Example:
+    ₹100 split among 3 equal shares becomes:
+    ₹33.34, ₹33.33, ₹33.33
+
+    The allocated amounts always add up exactly to the
+    original expense amount in paise.
+  */
+
+  function allocateExpense(expense) {
+    const peopleWithShares = appData.people
+      .map(person => ({
+        id: person.id,
+        units: expense.shares[person.id] || 0
+      }))
+      .filter(person => person.units > 0);
+
+    const totalUnits = peopleWithShares.reduce(
+      (sum, person) => sum + person.units,
+      0
+    );
+
+    const allocation = {};
+
+    for (const person of appData.people) {
+      allocation[person.id] = 0;
+    }
+
+    if (totalUnits === 0) {
+      return allocation;
+    }
+
+    let allocatedTotal = 0;
+
+    const portions = peopleWithShares.map(person => {
+      const exact = expense.amount * person.units / totalUnits;
+      const base = Math.floor(exact);
+
+      allocatedTotal += base;
+
+      return {
+        id: person.id,
+        amount: base,
+        remainder: exact - base
+      };
+    });
+
+    let remaining = expense.amount - allocatedTotal;
+
+    portions.sort((a, b) =>
+      b.remainder - a.remainder ||
+      a.id.localeCompare(b.id)
+    );
+
+    for (let i = 0; i < remaining; i++) {
+      portions[i].amount += 1;
+    }
+
+    for (const portion of portions) {
+      allocation[portion.id] = portion.amount;
+    }
+
+    return allocation;
+  }
+
+  // --------------------------------------------------
+  // TABS
+  // --------------------------------------------------
+
+  document.querySelectorAll(".tab").forEach(button => {
+    button.addEventListener("click", () => {
+      const target = button.dataset.tab;
+
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.toggle("active", tab === button);
+      });
+
+      document.querySelectorAll(".panel").forEach(panel => {
+        panel.classList.toggle("active", panel.id === target);
+      });
+
+      renderAll();
+    });
+  });
+
+  // --------------------------------------------------
+  // PEOPLE
+  // --------------------------------------------------
+
+  $("personForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const name = $("personName").value.trim();
+
+    if (!name) return;
+
+    const duplicate = appData.people.some(person =>
+      person.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (duplicate) {
+      alert("A person with this name already exists.");
+      return;
+    }
+
+    const person = {
+      id: makeId(),
+      name
+    };
+
+    appData.people.push(person);
+
+    // Add a zero share entry for the new person to existing expenses.
+    for (const expense of appData.expenses) {
+      expense.shares[person.id] = 0;
+    }
+
+    saveData();
+    $("personName").value = "";
+
+    renderAll();
+  });
+
+  function editPerson(personId) {
+    const person = getPerson(personId);
+    if (!person) return;
+
+    const newName = prompt("Edit person's name:", person.name);
+
+    if (newName === null) return;
+
+    const trimmed = newName.trim();
+
+    if (!trimmed) {
+      alert("Name cannot be empty.");
+      return;
+    }
+
+    const duplicate = appData.people.some(other =>
+      other.id !== personId &&
+      other.name.toLowerCase() === trimmed.toLowerCase()
+    );
+
+    if (duplicate) {
+      alert("Another person already has this name.");
+      return;
+    }
+
+    person.name = trimmed;
+
+    saveData();
+    renderAll();
+  }
+
+  function deletePerson(personId) {
+    const person = getPerson(personId);
+    if (!person) return;
+
+    /*
+      A person cannot be deleted if:
+      1. They paid for an expense, OR
+      2. They have a positive share in an expense.
+
+      Zero-share entries do not prevent deletion.
+    */
+
+    const linkedExpense = appData.expenses.find(expense =>
+      expense.paidBy === personId ||
+      (expense.shares[personId] || 0) > 0
+    );
+
+    if (linkedExpense) {
+      alert(
+        `"${person.name}" is linked to the expense "${linkedExpense.name}".\n\n` +
+        "You cannot delete this person until the linked expense is deleted " +
+        "or its payer/share distribution is changed."
+      );
+      return;
+    }
+
+    if (!confirm(`Delete ${person.name} from the group?`)) return;
+
+    appData.people = appData.people.filter(
+      item => item.id !== personId
+    );
+
+    // Remove their zero-share entries from all expenses.
+    for (const expense of appData.expenses) {
+      delete expense.shares[personId];
+    }
+
+    saveData();
+    renderAll();
+  }
+
+  function renderPeople() {
+    const container = $("peopleList");
+
+    if (appData.people.length === 0) {
+      container.innerHTML =
+        '<div class="empty">No people added yet.</div>';
+      return;
+    }
+
+    container.innerHTML = appData.people.map(person => `
+      <div class="person-row">
+        <div class="person-name">${escapeHTML(person.name)}</div>
+
+        <div class="actions">
+          <button
+            class="secondary small"
+            data-action="edit-person"
+            data-id="${escapeHTML(person.id)}"
+          >Edit</button>
+
+          <button
+            class="danger small"
+            data-action="delete-person"
+            data-id="${escapeHTML(person.id)}"
+          >Delete</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  $("peopleList").addEventListener("click", event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const id = button.dataset.id;
+
+    if (button.dataset.action === "edit-person") {
+      editPerson(id);
+    }
+
+    if (button.dataset.action === "delete-person") {
+      deletePerson(id);
+    }
+  });
+
+  // --------------------------------------------------
+  // EXPENSE FORM
+  // --------------------------------------------------
+
+  function renderExpenseForm() {
+    const paidBy = $("paidBy");
+    const currentPayer = paidBy.value;
+
+    if (appData.people.length === 0) {
+      paidBy.innerHTML = '<option value="">Add people first</option>';
+      paidBy.disabled = true;
+    } else {
+      paidBy.disabled = false;
+
+      paidBy.innerHTML = appData.people.map(person => `
+        <option value="${escapeHTML(person.id)}">
+          ${escapeHTML(person.name)}
+        </option>
+      `).join("");
+
+      if (appData.people.some(person => person.id === currentPayer)) {
+        paidBy.value = currentPayer;
+      }
+    }
+
+    const datalist = $("expenseNames");
+
+    const uniqueNames = [
+      ...new Set(appData.expenses.map(expense => expense.name))
+    ];
+
+    datalist.innerHTML = uniqueNames.map(name => `
+      <option value="${escapeHTML(name)}"></option>
+    `).join("");
+
+    renderShareInputs();
+  }
+
+  function renderShareInputs(values = null) {
+    const container = $("shareList");
+
+    if (appData.people.length === 0) {
+      container.innerHTML =
+        '<div class="empty">Add people before recording expenses.</div>';
+      return;
+    }
+
+    container.innerHTML = appData.people.map(person => {
+      const units = values && values[person.id] !== undefined
+        ? values[person.id]
+        : 0;
+
+      return `
+        <div class="share-item">
+          <div class="share-name">${escapeHTML(person.name)}</div>
+
+          <div class="share-controls">
+            <button
+              type="button"
+              class="secondary"
+              data-action="decrease-share"
+              data-id="${escapeHTML(person.id)}"
+              aria-label="Decrease share"
+            >−</button>
+
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value="${units}"
+              data-share-id="${escapeHTML(person.id)}"
+              aria-label="Share units for ${escapeHTML(person.name)}"
+            >
+
+            <button
+              type="button"
+              class="secondary"
+              data-action="increase-share"
+              data-id="${escapeHTML(person.id)}"
+              aria-label="Increase share"
+            >+</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function getShareValues() {
+    const shares = {};
+
+    document.querySelectorAll("[data-share-id]").forEach(input => {
+      const value = Number(input.value);
+
+      shares[input.dataset.shareId] =
+        Number.isSafeInteger(value) && value >= 0 ? value : 0;
+    });
+
+    return shares;
+  }
+
+  $("shareList").addEventListener("click", event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const input = document.querySelector(
+      `[data-share-id="${CSS.escape(button.dataset.id)}"]`
+    );
+
+    if (!input) return;
+
+    let value = Number(input.value) || 0;
+
+    if (button.dataset.action === "increase-share") {
+      value += 1;
+    } else {
+      value = Math.max(0, value - 1);
+    }
+
+    input.value = value;
+  });
+
+  $("equalSplitBtn").addEventListener("click", () => {
+    document.querySelectorAll("[data-share-id]").forEach(input => {
+      input.value = 1;
+    });
+  });
+
+  // --------------------------------------------------
+  // ADD / EDIT / CANCEL EXPENSE
+  // --------------------------------------------------
+
+  $("expenseForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (appData.people.length === 0) {
+      alert("Please add people before recording an expense.");
+      return;
+    }
+
+    const name = $("expenseName").value.trim();
+    const amount = rupeesToPaise($("expenseAmount").value);
+    const paidBy = $("paidBy").value;
+    const shares = getShareValues();
+
+    if (!name) {
+      alert("Please enter an expense name.");
+      return;
+    }
+
+    if (amount === null || amount <= 0) {
+      alert("Please enter a valid amount greater than zero.");
+      return;
+    }
+
+    if (!getPerson(paidBy)) {
+      alert("Please select who paid for this expense.");
+      return;
+    }
+
+    const validShares = Object.values(shares).reduce(
+      (sum, units) => sum + units,
+      0
+    );
+
+    if (validShares <= 0) {
+      alert("At least one person must have a positive share.");
+      return;
+    }
+
+    const existingExpense = editingExpenseId
+      ? appData.expenses.find(expense => expense.id === editingExpenseId)
+      : null;
+
+    if (editingExpenseId && !existingExpense) {
+      alert("The expense being edited could not be found.");
+      cancelExpenseEdit();
+      return;
+    }
+
+    if (existingExpense) {
+      existingExpense.name = name;
+      existingExpense.amount = amount;
+      existingExpense.paidBy = paidBy;
+      existingExpense.shares = shares;
+    } else {
+      appData.expenses.push({
+        id: makeId(),
+        name,
+        amount,
+        paidBy,
+        shares,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    saveData();
+    resetExpenseForm();
+    renderAll();
+  });
+
+  function resetExpenseForm() {
+    editingExpenseId = null;
+
+    $("expenseName").value = "";
+    $("expenseAmount").value = "";
+
+    if (appData.people.length > 0) {
+      $("paidBy").value = appData.people[0].id;
+    }
+
+    renderShareInputs();
+
+    $("expenseFormTitle").textContent = "Add an Expense";
+    $("saveExpenseBtn").textContent = "Add Expense";
+    $("cancelEditBtn").classList.add("hidden");
+    $("editingBanner").classList.remove("visible");
+  }
+
+  function cancelExpenseEdit() {
+    resetExpenseForm();
+  }
+
+  $("cancelEditBtn").addEventListener("click", cancelExpenseEdit);
+
+  function editExpense(expenseId) {
+    const expense = appData.expenses.find(
+      item => item.id === expenseId
+    );
+
+    if (!expense) return;
+
+    editingExpenseId = expenseId;
+
+    $("expenseName").value = expense.name;
+    $("expenseAmount").value = (expense.amount / 100).toFixed(2);
+    $("paidBy").value = expense.paidBy;
+
+    renderShareInputs(expense.shares);
+
+    $("expenseFormTitle").textContent = "Edit Expense";
+    $("saveExpenseBtn").textContent = "Save Changes";
+    $("cancelEditBtn").classList.remove("hidden");
+    $("editingBanner").classList.add("visible");
+
+    // Switch to the Expenses tab and bring the form into view.
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.classList.toggle("active", tab.dataset.tab === "expenses");
+    });
+
+    document.querySelectorAll(".panel").forEach(panel => {
+      panel.classList.toggle("active", panel.id === "expenses");
+    });
+
+    $("expenseFormTitle").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }
+
+  function deleteExpense(expenseId) {
+    const expense = appData.expenses.find(
+      item => item.id === expenseId
+    );
+
+    if (!expense) return;
+
+    if (!confirm(
+      `Delete this expense?\n\n${expense.name} — ${formatMoney(expense.amount)}`
+    )) {
+      return;
+    }
+
+    appData.expenses = appData.expenses.filter(
+      item => item.id !== expenseId
+    );
+
+    if (editingExpenseId === expenseId) {
+      resetExpenseForm();
+    }
+
+    saveData();
+    renderAll();
+  }
+
+  // --------------------------------------------------
+  // RECORDED EXPENSES TABLE
+  // --------------------------------------------------
+
+  function renderExpensesTable() {
+    const container = $("expensesTable");
+
+    if (appData.expenses.length === 0) {
+      container.innerHTML =
+        '<div class="empty">No expenses recorded yet.</div>';
+      return;
+    }
+
+    const rows = appData.expenses.map((expense, index) => {
+      const shareDescription = appData.people
+        .filter(person => (expense.shares[person.id] || 0) > 0)
+        .map(person =>
+          `${escapeHTML(person.name)}: ${expense.shares[person.id]}`
+        )
+        .join(", ");
+
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>
+            <strong>${escapeHTML(expense.name)}</strong>
+            <div class="muted">${shareDescription || "No shares"}</div>
+          </td>
+          <td>${escapeHTML(getPersonName(expense.paidBy))}</td>
+          <td class="amount">${formatMoney(expense.amount)}</td>
+          <td>
+            <div class="actions">
+              <button
+                class="secondary small"
+                data-action="edit-expense"
+                data-id="${escapeHTML(expense.id)}"
+              >Edit</button>
+
+              <button
+                class="danger small"
+                data-action="delete-expense"
+                data-id="${escapeHTML(expense.id)}"
+              >Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    container.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Expense</th>
+              <th>Paid by</th>
+              <th class="amount">Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3">Total Expenses</td>
+              <td class="amount">${formatMoney(totalExpenses())}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    `;
+  }
+
+  $("expensesTable").addEventListener("click", event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const id = button.dataset.id;
+
+    if (button.dataset.action === "edit-expense") {
+      editExpense(id);
+    }
+
+    if (button.dataset.action === "delete-expense") {
+      deleteExpense(id);
+    }
+  });
+
+  // --------------------------------------------------
+  // CONTRIBUTION BREAKDOWN TABLE
+  // --------------------------------------------------
+
+  function renderContributionTable() {
+    const container = $("contributionTable");
+
+    if (appData.expenses.length === 0) {
+      container.innerHTML =
+        '<div class="empty">Add expenses to see the contribution breakdown.</div>';
+      return;
+    }
+
+    if (appData.people.length === 0) {
+      container.innerHTML =
+        '<div class="empty">Add people to see the contribution breakdown.</div>';
+      return;
+    }
+
+    const headers = appData.people.map(person => `
+      <th class="amount">${escapeHTML(person.name)}</th>
+    `).join("");
+
+    const totals = {};
+    appData.people.forEach(person => {
+      totals[person.id] = 0;
+    });
+
+    const rows = appData.expenses.map((expense, index) => {
+      const allocation = allocateExpense(expense);
+
+      let cells = "";
+
+      for (const person of appData.people) {
+        const amount = allocation[person.id] || 0;
+        totals[person.id] += amount;
+
+        cells += `
+          <td class="amount">
+            ${amount === 0 ? "—" : formatMoney(amount)}
+          </td>
+        `;
+      }
+
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHTML(expense.name)}</td>
+          <td class="amount">${formatMoney(expense.amount)}</td>
+          ${cells}
+        </tr>
+      `;
+    }).join("");
+
+    const totalCells = appData.people.map(person => `
+      <td class="amount">${formatMoney(totals[person.id])}</td>
+    `).join("");
+
+    container.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Expense</th>
+              <th class="amount">Total</th>
+              ${headers}
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3">Total Share</td>
+              ${totalCells}
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    `;
+  }
+
+  // --------------------------------------------------
+  // SETTLEMENT CALCULATIONS
+  // --------------------------------------------------
+
+  function calculateBalances() {
+    const balances = {};
+
+    for (const person of appData.people) {
+      balances[person.id] = {
+        id: person.id,
+        name: person.name,
+        paid: 0,
+        share: 0,
+        balance: 0
+      };
+    }
+
+    for (const expense of appData.expenses) {
+      if (balances[expense.paidBy]) {
+        balances[expense.paidBy].paid += expense.amount;
+      }
+
+      const allocation = allocateExpense(expense);
+
+      for (const person of appData.people) {
+        balances[person.id].share += allocation[person.id] || 0;
+      }
+    }
+
+    for (const person of Object.values(balances)) {
+      person.balance = person.paid - person.share;
+    }
+
+    return Object.values(balances);
+  }
+
+  /*
+    Greedy settlement:
+    - People with negative balances owe money.
+    - People with positive balances should receive money.
+    - Match the largest remaining debt and credit until settled.
+  */
+
+  function calculateTransfers() {
+    const balances = calculateBalances();
+
+    const debtors = balances
+      .filter(person => person.balance < 0)
+      .map(person => ({
+        id: person.id,
+        name: person.name,
+        remaining: -person.balance
+      }))
+      .sort((a, b) => b.remaining - a.remaining);
+
+    const creditors = balances
+      .filter(person => person.balance > 0)
+      .map(person => ({
+        id: person.id,
+        name: person.name,
+        remaining: person.balance
+      }))
+      .sort((a, b) => b.remaining - a.remaining);
+
+    const transfers = [];
+
+    let i = 0;
+    let j = 0;
+
+    while (i < debtors.length && j < creditors.length) {
+      const amount = Math.min(
+        debtors[i].remaining,
+        creditors[j].remaining
+      );
+
+      if (amount > 0) {
+        transfers.push({
+          from: debtors[i].id,
+          fromName: debtors[i].name,
+          to: creditors[j].id,
+          toName: creditors[j].name,
+          amount
+        });
+      }
+
+      debtors[i].remaining -= amount;
+      creditors[j].remaining -= amount;
+
+      if (debtors[i].remaining === 0) i++;
+      if (creditors[j].remaining === 0) j++;
+    }
+
+    return {
+      balances,
+      transfers
+    };
+  }
+
+  function renderSettlement() {
+    const summaryContainer = $("settlementSummary");
+    const settlementContainer = $("settlementList");
+
+    if (appData.people.length === 0) {
+      summaryContainer.innerHTML =
+        '<div class="empty">Add people to calculate settlement.</div>';
+
+      settlementContainer.innerHTML =
+        '<div class="empty">No settlement available.</div>';
+
+      return;
+    }
+
+    const { balances, transfers } = calculateTransfers();
+
+    summaryContainer.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Person</th>
+              <th class="amount">Paid</th>
+              <th class="amount">Share</th>
+              <th class="amount">Balance</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${balances.map(person => {
+              const balanceClass = person.balance > 0
+                ? "positive"
+                : person.balance < 0
+                  ? "negative"
+                  : "";
+
+              const sign = person.balance > 0 ? "+" : "";
+
+              return `
+                <tr>
+                  <td>${escapeHTML(person.name)}</td>
+                  <td class="amount">${formatMoney(person.paid)}</td>
+                  <td class="amount">${formatMoney(person.share)}</td>
+                  <td class="amount balance ${balanceClass}">
+                    ${sign}${formatMoney(person.balance)}
+                  </td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+
+          <tfoot>
+            <tr class="total-row">
+              <td>Total</td>
+              <td class="amount">${formatMoney(
+                balances.reduce((sum, p) => sum + p.paid, 0)
+              )}</td>
+              <td class="amount">${formatMoney(
+                balances.reduce((sum, p) => sum + p.share, 0)
+              )}</td>
+              <td class="amount">—</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    `;
+
+    if (transfers.length === 0) {
+      settlementContainer.innerHTML = `
+        <div class="empty">
+          <strong>Everyone is settled!</strong><br>
+          No transfers are required.
+        </div>
+      `;
+    } else {
+      settlementContainer.innerHTML = transfers.map(transfer => `
+        <div class="settlement-item">
+          <div>
+            <strong>${escapeHTML(transfer.fromName)}</strong>
+            <span class="settlement-arrow">pays</span>
+            <strong>${escapeHTML(transfer.toName)}</strong>
+          </div>
+
+          <div class="settlement-amount">
+            ${formatMoney(transfer.amount)}
+          </div>
+        </div>
+      `).join("");
+    }
+  }
+
+  // --------------------------------------------------
+  // SETTLEMENT TEXT, COPY AND WHATSAPP
+  // --------------------------------------------------
+
+  function generateSettlementText() {
+    const { transfers } = calculateTransfers();
+
+    const totalSettled = transfers.reduce(
+      (sum, transfer) => sum + transfer.amount,
+      0
+    );
+
+    const totalSpent = totalExpenses();
+
+    const lines = [
+      "Group Expense Settlement",
+      "------------------------"
+    ];
+
+    if (transfers.length === 0) {
+      lines.push("Everyone is settled. No transfers required.");
+    } else {
+      transfers.forEach(transfer => {
+        lines.push(
+          `${transfer.fromName} pays ${transfer.toName}: ` +
+          formatMoney(transfer.amount)
+        );
+      });
+    }
+
+    lines.push("");
+    lines.push(`Total settled: ${formatMoney(totalSettled)}`);
+    lines.push(`Total spends: ${formatMoney(totalSpent)}`);
+
+    return lines.join("\n");
+  }
+
+  async function copyText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        alert("Settlement copied to clipboard.");
+        return;
+      }
+    } catch (error) {
+      console.warn("Clipboard API unavailable:", error);
+    }
+
+    // Fallback for browsers where Clipboard API is unavailable.
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    let copied = false;
+
+    try {
+      copied = document.execCommand("copy");
+    } catch (error) {
+      copied = false;
+    }
+
+    textarea.remove();
+
+    if (copied) {
+      alert("Settlement copied to clipboard.");
+    } else {
+      prompt("Copy the settlement text below:", text);
+    }
+  }
+
+  $("copySettlementBtn").addEventListener("click", () => {
+    copyText(generateSettlementText());
+  });
+
+  $("whatsappBtn").addEventListener("click", () => {
+    const text = generateSettlementText();
+    const url = "https://wa.me/?text=" + encodeURIComponent(text);
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  });
+
+  // --------------------------------------------------
+  // EXPORT JSON
+  // --------------------------------------------------
+
+  $("exportBtn").addEventListener("click", () => {
+    const json = JSON.stringify(appData, null, 2);
+    const blob = new Blob([json], {
+      type: "application/json"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "group-expenses-backup.json";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+  });
+
+  // --------------------------------------------------
+  // IMPORT JSON
+  // --------------------------------------------------
+
+  $("importBtn").addEventListener("click", () => {
+    $("importFile").click();
+  });
+
+  $("importFile").addEventListener("change", event => {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const imported = JSON.parse(reader.result);
+        const validated = validateImportedData(imported);
+
+        if (!confirm(
+          "Import this backup?\n\n" +
+          "This will replace the current people and expenses."
+        )) {
+          return;
+        }
+
+        appData = validated;
+        editingExpenseId = null;
+
+        saveData();
+        resetExpenseForm();
+        renderAll();
+
+        alert("Data imported successfully.");
+      } catch (error) {
+        console.error(error);
+        alert(
+          "Could not import this file. It may be invalid or corrupted.\n\n" +
+          error.message
+        );
+      } finally {
+        $("importFile").value = "";
+      }
+    };
+
+    reader.onerror = () => {
+      alert("Could not read the selected file.");
+      $("importFile").value = "";
+    };
+
+    reader.readAsText(file);
+  });
+
+  // --------------------------------------------------
+  // CLEAR DATA
+  // --------------------------------------------------
+
+  $("clearBtn").addEventListener("click", () => {
+    const confirmed = confirm(
+      "Are you sure you want to clear all group data?\n\n" +
+      "This will permanently remove all people and expenses stored by " +
+      "this app in this browser.\n\n" +
+      "Export a JSON backup first if you may need this data later."
+    );
+
+    if (!confirmed) return;
+
+    // Remove only this app's storage entry.
+    localStorage.removeItem(STORAGE_KEY);
+
+    appData = {
+      version: 1,
+      people: [],
+      expenses: []
+    };
+
+    editingExpenseId = null;
+
+    resetExpenseForm();
+    renderAll();
+
+    alert("All group data has been cleared.");
+  });
+
+  // --------------------------------------------------
+  // RENDER EVERYTHING
+  // --------------------------------------------------
+
+  function renderAll() {
+    renderPeople();
+    renderExpenseForm();
+    renderExpensesTable();
+    renderContributionTable();
+    renderSettlement();
+  }
+
+  // --------------------------------------------------
+  // INITIALISE
+  // --------------------------------------------------
+
+  loadData();
+  renderAll();
+
+})();
+</script>
+
+</body>
+</html>
